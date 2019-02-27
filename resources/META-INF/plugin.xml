@@ -1,0 +1,87 @@
+<idea-plugin>
+  <id>com.your.company.unique.plugin.id</id>
+  <name>Plugin display name here</name>
+  <version>1.0</version>
+  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+
+  <description><![CDATA[
+      Enter short description for your plugin here.<br>
+      <em>most HTML tags may be used</em>
+    ]]></description>
+
+  <change-notes><![CDATA[
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>
+    ]]>
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="173.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+
+  -->
+  <depends>com.intellij.modules.lang</depends>
+  <depends>com.intellij.modules.platform</depends>
+
+
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+
+    <projectService serviceInterface="Ifelse" serviceImplementation="IfelseImpl"/>
+
+    <fileTypeFactory implementation="org.ifelse.editors.IEFileTypeFacory"/>
+    <fileEditorProvider implementation="org.ifelse.IEProvider"/>
+
+
+    <toolWindow id="Guide" anchor="right"    factoryClass="org.ifelse.windows.GuideToolWindow" secondary="false"  />
+    <toolWindow id="FlowPoint" anchor="left" factoryClass="org.ifelse.windows.FlowPointsWindow" secondary="true"/>
+    <toolWindow id="Property" anchor="right" factoryClass="org.ifelse.windows.PropertyWindow" secondary="true"/>
+
+    <ApplicationLoadListener implementation="org.ifelse.IEAppLoader" id="IEAppLoader" />
+
+  </extensions>
+
+
+  <actions>
+    <!-- Add your actions here -->
+
+
+
+
+    <group id="ifelse_toolbar" description="toolbar buttons" popup="false">
+
+      <separator/>
+      <action class="org.ifelse.actions.ActionRun" id="ifelse_ActionRun" text="ifelse run" popup="true">
+
+
+      </action>
+
+
+      <action class="org.ifelse.actions.ActionGuide" id="ifelse_guide" text="ifelse guide" popup="true" >
+
+
+      </action>
+
+      <action class="org.ifelse.actions.ActionVars" id="ifelse_vars" text="ifelse static vars" popup="true" >
+
+
+      </action>
+      <action class="org.ifelse.actions.ActionRefresh" id="ifelse_refresh" text="ifelse refresh" popup="true">
+
+
+      </action>
+
+
+
+      <separator/>
+
+      <add-to-group group-id="MainToolBar" anchor="last"/>
+    </group>
+
+  </actions>
+
+</idea-plugin>

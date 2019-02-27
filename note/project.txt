@@ -1,0 +1,3 @@
+1.editor
+2.toolwindow
+3.console

@@ -1,0 +1,160 @@
+package org.ifelse.windows;
+
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.SingleSelectionModel;
+import com.intellij.ui.content.Content;
+import com.intellij.ui.content.ContentFactory;
+import org.ifelse.IEAppLoader;
+import org.ifelse.editors.EditorFactory;
+import org.ifelse.model.MEditor;
+import org.ifelse.model.MProject;
+import org.ifelse.ui.EditorItem;
+import org.ifelse.ui.ToolbarButton;
+import org.ifelse.utils.Icons;
+import org.ifelse.utils.Log;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class GuideToolWindow implements ToolWindowFactory {
+    @Override
+    public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+
+
+        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+        Content content = contentFactory.createContent(createPanel(project),"", false);
+        toolWindow.getContentManager().addContent(content);
+
+    }
+
+    private JComponent createPanel(Project project) {
+
+
+        MProject mProject = IEAppLoader.getMProject(project);
+
+        JPanel panel = new JPanel();
+
+        panel.setLayout(new BorderLayout());
+
+        JToolBar toolBar = new JToolBar();
+
+
+        ToolbarButton btn_add = new ToolbarButton(AllIcons.ToolbarDecorator.Add);
+        ToolbarButton btn_remove = new ToolbarButton(AllIcons.ToolbarDecorator.Remove);
+
+        toolBar.setFloatable(false);
+        toolBar.addSeparator();
+        toolBar.add(btn_add);
+        toolBar.add(btn_remove);
+        toolBar.addSeparator();
+
+        panel.add(toolBar, BorderLayout.NORTH);
+
+
+        JTable table = new JTable();
+
+
+        table.setModel(new AbstractTableModel() {
+            @Override
+            public int getRowCount() {
+                return mProject.editors==null ? 0 : mProject.editors.size();
+            }
+
+            @Override
+            public int getColumnCount() {
+                return 1;
+            }
+
+            @Override
+            public Object getValueAt(int rowIndex, int columnIndex) {
+                return  mProject.editors.get(rowIndex);
+            }
+
+
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+
+
+        });
+
+        table.setDefaultRenderer(Object.class, new TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                return new EditorItem((MEditor) value);
+            }
+        });
+
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+
+                int rowIndex = table.getSelectedRow();
+
+                if( rowIndex > -1 ){
+
+
+                   MEditor editor =  mProject.editors.get(rowIndex);
+
+                   Log.i("click row:%s",editor);
+
+
+                    EditorFactory.open(project,editor);
+
+                }
+
+            }
+        });
+
+
+
+        table.setRowHeight(60);
+
+        table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+
+        table.setTableHeader(null);
+
+        table.setSelectionBackground(new Color(0,0,0,0));
+
+
+
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+
+
+        return panel;
+    }
+
+    @Override
+    public void init(ToolWindow window) {
+        window.setIcon(Icons.icon_logo);
+    }
+
+    @Override
+    public boolean shouldBeAvailable(@NotNull Project project) {
+
+        return IEAppLoader.isMProject(project);
+    }
+
+    @Override
+    public boolean isDoNotActivateOnStart() {
+        return true;
+    }
+
+
+}
