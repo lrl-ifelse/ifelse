@@ -55,6 +55,8 @@ public class ActionRun extends AnAction {
         GroovyClassLoader loader = new GroovyClassLoader(parent);
         String path = anActionEvent.getProject().getBasePath()+ RP.Path.script+ "/Run.groovy";
 
+        Log.console(anActionEvent.getProject(),path);
+
         try {
 
 
@@ -65,11 +67,13 @@ public class ActionRun extends AnAction {
 
 
         } catch (Exception e) {
+
+            Log.console(anActionEvent.getProject(),e);
             e.printStackTrace();
         }
 
-        SaveAndSyncHandler.getInstance().refreshOpenFiles();
         VirtualFileManager.getInstance().syncRefresh();
+
 
 
 

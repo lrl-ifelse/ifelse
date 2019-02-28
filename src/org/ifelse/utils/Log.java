@@ -63,9 +63,9 @@ public class Log {
             }
 
         } else
-            console.print(msg, ConsoleViewContentType.NORMAL_OUTPUT);
+            console.print(msg, ConsoleViewContentType.ERROR_OUTPUT);
 
-        console.print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
+        console.print("\n", ConsoleViewContentType.ERROR_OUTPUT);
         console.requestScrollingToEnd();
 
 
