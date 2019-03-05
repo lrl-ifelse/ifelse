@@ -5,20 +5,27 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.IdeEventQueue;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.AsyncExecutionService;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.FileEditorStateLevel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
+import com.intellij.ui.tabs.JBTabs;
 import org.ifelse.IEAppLoader;
 import org.ifelse.RP;
 import org.ifelse.message.MessageCenter;
 import org.ifelse.message.MsgEvent;
+import org.ifelse.model.MDoc;
 import org.ifelse.model.MEditor;
 import org.ifelse.model.MFlowPoint;
 import org.ifelse.ui.OnClickListener;
@@ -41,17 +48,46 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
     JPanel panel;
     VLDoc doc;
 
+    JLabel label;
+
     public VLEditor(Project project, @NotNull VirtualFile virtualFile, MEditor editor) {
         super(project, virtualFile, editor);
-        MessageCenter.register(project,this);
-
     }
 
+    public void focusEditor(){
+
+                if( panel != null )
+                ApplicationManager.getApplication().runReadAction(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Container container = getComponent().getParent();
+                        while( (container = container.getParent()) != null ){
+
+                            if( container instanceof  JBTabs ){
+
+                                Log.i("Focus editor.");
+                                JBTabs tabs = (JBTabs) container;
+                                tabs.select(tabs.getTabAt(1),true);
+                                break;
+
+                            }
+
+
+                        }
+
+                    }
+                });
+
+
+    }
 
 
     @NotNull
     @Override
     public JComponent getComponent() {
+
+
 
         if( panel == null ){
 
@@ -104,20 +140,74 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
 
 
             ToolbarButton btn_refresh = new ToolbarButton(AllIcons.Actions.Refresh);
+            btn_refresh.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(JComponent component) {
+
+                    virtualFile.refresh(false,false);
+
+                }
+            });
+
+            ToolbarButton btn_zoomin = new ToolbarButton(AllIcons.Graph.ZoomIn);
+
+            btn_zoomin.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(JComponent component) {
+                    doc.zoomin();
+                }
+            });
+
+            ToolbarButton btn_zoomout = new ToolbarButton(AllIcons.Graph.ZoomOut);
+
+            btn_zoomout.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(JComponent component) {
+                    doc.zoomout();
+                }
+            });
+
+
+            ToolbarButton btn_flows = new ToolbarButton(Icons.icon_logo);
+
+            btn_flows.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(JComponent component) {
+
+                    MEditor editor = IEAppLoader.getMProject(project).getEditorByName("Flows");
+                    EditorFactory.open(project, editor);
+                    MessageCenter.sendMsg(project,MsgEvent.B_FLOW_FOCUS, doc.flowid,500 );
+
+
+
+                }
+            });
+
+
 
             toolBar.setFloatable(false);
             toolBar.addSeparator();
-            toolBar.add(btn_add);
+
+            if( mEditor != null && mEditor.defPoint != null )
+                toolBar.add(btn_add);
+
             toolBar.add(btn_refresh);
+
             toolBar.addSeparator();
 
+            toolBar.add(btn_zoomin);
+            toolBar.add(btn_zoomout);
 
 
-            if( mEditor!= null ) {
-                JLabel label = new JLabel();
-                label.setText(mEditor.descript);
-                toolBar.add(label);
-            }
+            toolBar.addSeparator();
+
+            if( mEditor == null || mEditor.defPoint == null )
+            toolBar.add(btn_flows);
+
+
+            label = new JLabel();
+            toolBar.add(label);
+
 
 
             panel.add(toolBar, BorderLayout.NORTH);
@@ -135,13 +225,28 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
 
                     if( !ToolWindowManager.getInstance(project).getToolWindow("Property").isVisible() ) {
 
-                        if( item_focus != null )
-                        ToolWindowManager.getInstance(project).getToolWindow("Property").show(new Runnable() {
-                            @Override
-                            public void run() {
-                                MessageCenter.sendMsg(project, MsgEvent.B_FLOWITEM_FOCUS, item_focus);
-                            }
-                        });
+                        if( item_focus != null ) {
+
+                            IdeEventQueue.getInstance().doWhenReady(new Runnable() {
+                                @Override
+                                public void run() {
+
+
+
+                                    ToolWindowManager.getInstance(project).getToolWindow("Property").show(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            MessageCenter.sendMsg(project, MsgEvent.B_FLOWITEM_FOCUS, item_focus);
+                                        }
+                                    });
+
+
+
+                                }
+                            });
+
+
+                        }
                     }
                     else{
 
@@ -221,8 +326,8 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
 
 
 
-
         }
+
 
         try {
             load();
@@ -230,55 +335,69 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
             e.printStackTrace();
         }
 
+
         return panel;
 
 
     }
 
+
+
     private void load() throws Exception {
+
+
+
 
         String path = virtualFile.getPath();
 
-        String txt = FileUtil.read(path);
 
-        java.util.List<VLItem> items =   new ArrayList<>();
 
-        JSONArray array = JSON.parseArray(txt);
+        Log.i("VLEditor load:%s",path);
+
+
+        MDoc mDoc = RP.Data.loadDoc(path);
+
+
+        if( mDoc.title != null )
+            label.setText(mDoc.title);
+
+        //JSONArray array = JSON.parseArray(txt);
+
+
+        doc.title = mDoc.title;
+        doc.flowid = mDoc.flowid;
+
 
         doc.getElements().clear();
-        HashMap<String,VLItem> i_points = new HashMap<>();
-        HashMap<String,VLLine> i_lines = new HashMap<>();
+
+        HashMap<String,VLItem> i_points = mDoc.getPoints();
+
+        HashMap<String,VLItem> i_lines = mDoc.getLines();
 
 
-        if( array == null )
-            return;
-
-        for(Object obj : array){
-
-             JSONObject jobject = (JSONObject) obj;
-             String classname = jobject.getString("classname");
-
-             VLItem item = (VLItem) jobject.toJavaObject( Class.forName(classname) );
-
-             if( item.isLine() ) {
-                 i_lines.put(item.id, (VLLine) item);
-             }
-             else
-                 i_points.put(item.id,item);
-
+        for(VLItem item : i_points.values()){
 
              doc.getElements().add(item);
              item.initUI(project);
 
          }
-         for(VLLine line:i_lines.values()){
+        for(VLItem item : i_lines.values()){
 
+            doc.getElements().add(item);
+            item.initUI(project);
+
+        }
+
+
+        for(VLItem vline:i_lines.values()){
+
+             VLLine line = (VLLine) vline;
              line.point_from = i_points.get(line.id_from);
              line.point_to = i_points.get(line.id_to);
 
          }
          i_points.clear();
-         i_points.clear();
+         i_lines.clear();
 
 
     }
@@ -289,27 +408,35 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
 
     public void save(){
 
-         String txt = JSON.toJSONString(doc.getElements(), SerializerFeature.PrettyFormat);
-//         String path = virtualFile.getPath();
-//        try {
-//            FileUtil.save(txt,path);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        virtualFile.refresh(false,false);
+
+       // mDoc.clear();
+        MDoc mDoc =  doc.getMDoc();
+
+        String txt = JSON.toJSONString(mDoc, SerializerFeature.PrettyFormat);
 
         final Document document = FileDocumentManager.getInstance().getDocument(virtualFile);
         final PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
 
+        ApplicationManager.getApplication().runWriteAction(
+                new Runnable() {
+                    @Override
+                    public void run() {
 
-        new WriteCommandAction.Simple(project, psiFile) {
-            @Override
-            protected void run() {
-                document.setText( txt );
-                FileDocumentManager.getInstance().saveDocument(document);
-            }
-        }.execute();
+                        document.setText( txt );
+                        FileDocumentManager.getInstance().saveDocument(document);
+                    }
+                }
+        );
+
+
+//        new WriteCommandAction.Simple(project, psiFile) {
+//            @Override
+//            protected void run() {
+//                document.setText( txt );
+//                FileDocumentManager.getInstance().saveDocument(document);
+//            }
+//        }.execute();
+
 
 
     }
@@ -317,7 +444,7 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
     @Override
     public void deselectNotify() {
 
-        save();
+        //save();
         ToolWindowManager.getInstance(project).getToolWindow("Property").hide(null);
     }
 
@@ -331,7 +458,7 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
     @Override
     public boolean onMessage(Project project, MsgEvent event, Object value) {
 
-
+        Log.i("onMessage event:%s vf:%s",event,virtualFile.getPath());
         switch (event) {
 
             case B_PROPERTY_CHANGED: {
@@ -340,8 +467,40 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
 
                     doc.repaint();
                 }
-                return true;
+                save();
+
             }
+            return true;
+            case B_FLOW_FOCUS:{
+
+
+                    //focusEditor();
+
+                    if( doc != null )
+                    for(VLItem item : doc.getElements()){
+
+
+                        if( item.id.equals(value) ){
+
+                            Log.i("B_FLOW_FOCUS id:%s vf:%s",item.id,virtualFile.getPath());
+                            doc.onFocusChanged(item);
+
+
+
+                            ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    doc.repaint();
+                                }
+                            });
+
+                            break;
+
+                        }
+                    }
+
+            }
+            return true;
         }
         return false;
     }

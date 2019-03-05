@@ -5,6 +5,7 @@ public enum  MsgEvent {
 
     B_FLOWITEM_FOCUS,
     B_PROPERTY_CHANGED,
+    B_FLOW_FOCUS,
 
 
 }

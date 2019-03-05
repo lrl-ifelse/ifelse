@@ -39,11 +39,32 @@ public class TemplateUtil {
 
         String txt = FileUtil.read(path);
 
-        JSONArray array = JSON.parseArray(txt);
+
+
+        Object obj_ = JSON.parse(txt);
+
+        JSONArray jsonArray = null;
+
+        if( obj_ instanceof JSONObject )
+        {
+            JSONObject jobj = (JSONObject) obj_;
+
+            if( jobj.containsKey("items") )
+            {
+                jsonArray = jobj.getJSONArray("items");
+            }
+
+        }else if( obj_ instanceof  JSONArray ) {
+
+            jsonArray = (JSONArray) obj_;
+        }
+
+
+
 
         ArrayList<VLItem> list = new ArrayList();
 
-        for(Object obj : array){
+        for(Object obj : jsonArray){
 
             JSONObject jobject = (JSONObject) obj;
             String classname = jobject.getString("classname");

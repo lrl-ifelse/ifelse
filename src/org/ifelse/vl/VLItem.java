@@ -19,6 +19,7 @@ package org.ifelse.vl;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.intellij.openapi.project.Project;
 import org.ifelse.model.MProperty;
+import org.ifelse.model.MVar;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -133,4 +134,77 @@ public abstract class VLItem {
 
 
     public abstract VLItem clone();
+
+
+    @JSONField(serialize = false)
+    public java.util.List<MVar> getVars() {
+
+
+
+
+        if( isLine() )
+            return null;
+        List<MVar> result = new ArrayList<>();
+
+        for(MProperty mp : mproperties){
+
+            if( mp.name.equals("descript"))
+                continue;
+            if( mp.value != null && mp.value.indexOf('#')>-1 ){
+
+
+                // Log.console("MVar find one%s",mp.value);
+                String[] vs = mp.value.split(",");
+
+                for(String v: vs){
+
+                    if( v.charAt(0) == '#' ) {
+
+                        String vv = getVar(v);
+
+                        MVar var = new MVar(vv);
+                        var.name = mp.name;
+                        var.descript = getDescript();
+
+                        result.add(var);
+
+                        // Log.console("MVar  ->%s", var );
+
+                    }
+                }
+
+
+
+            }
+
+        }
+
+        return result;
+
+
+
+    }
+
+    @JSONField(serialize = false)
+    public  String getVar(String str){
+
+        if( str.charAt(0) == '#' ){
+
+            for(int i=1;i<str.length();i++){
+
+                char c = str.charAt(i);
+                if( !( (c>='A' && c<= 'z') || c == '_' ) ) {
+
+                    return str.substring(0,i);
+
+                }
+
+
+            }
+            return str;
+
+        }
+        else
+            return null;
+    }
 }

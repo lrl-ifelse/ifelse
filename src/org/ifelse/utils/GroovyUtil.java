@@ -52,6 +52,7 @@ public class GroovyUtil {
     }
 
 
+    //回调 R.groovy
     public static void open(Project project, List<MProperty> properies) throws Exception{
 
 

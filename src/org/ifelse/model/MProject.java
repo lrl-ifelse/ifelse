@@ -17,24 +17,31 @@ package org.ifelse.model;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.intellij.compiler.ant.taskdefs.Unzip;
 import com.intellij.execution.impl.ConsoleViewImpl;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.impl.file.impl.FileManagerImpl;
 import org.ifelse.IEAppLoader;
 import org.ifelse.RP;
 import org.ifelse.utils.FileUtil;
 import org.ifelse.utils.Icons;
+import org.ifelse.utils.UnZip;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 public class MProject {
 
+    @JSONField(serialize = false)
     public String key;
 
     @JSONField(serialize = false)
@@ -50,7 +57,7 @@ public class MProject {
     public HashMap<String,MFlowPoint> flowpoints;
 
 
-
+    @JSONField(serialize = false)
     public boolean isIEProject;
 
 
@@ -71,6 +78,41 @@ public class MProject {
     public String getSequenceStr(Project project){
 
         return String.valueOf(getSequence(project));
+    }
+
+    public void create(Project project){
+
+
+        editors = new ArrayList<>();
+        newDefEvents();
+        newDefFormsEditor();
+        newDefFieldTypes();
+
+        newDefFlowPoints(project);
+
+        try {
+            copyRes(project);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        save(project);
+
+        init(project);
+
+    }
+
+    private void copyRes(Project project) throws IOException {
+
+        //getClass().getClassLoader().getResourceAsStream()
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("/res.zip");
+        String dir = RP.Path.getIEPath(project);
+        UnZip.unzip(inputStream,dir);
+        inputStream.close();
+        FileUtil.refresh(dir);
+
+
     }
 
     public void init(Project project){
@@ -302,6 +344,21 @@ public class MProject {
 
     }
 
+    public MEditor getEditorByName(String name){
+
+
+        for(MEditor mEditor : editors){
+
+            if( mEditor.name.equals(name) )
+                return mEditor;
+
+        }
+        return null;
+
+    }
+
+
+
     @JSONField(serialize = false)
     ConsoleViewImpl consoleview;
 
@@ -335,6 +392,22 @@ public class MProject {
         window.show(null);
 
         return consoleview;
+
+
+    }
+
+    public void save(Project project) {
+
+        String txt = JSON.toJSONString(this, SerializerFeature.PrettyFormat);
+
+        String path = RP.Path.getIeData(project);
+
+        try {
+            FileUtil.save(txt,path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        VirtualFileManager.getInstance().refreshAndFindFileByUrl("file://" + path);
 
 
     }

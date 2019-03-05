@@ -13,6 +13,7 @@ import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.impl.file.impl.FileManager;
+import org.ifelse.editors.VLEditor;
 import org.ifelse.message.MessageCenter;
 import org.ifelse.model.MProject;
 import org.ifelse.utils.FileUtil;
@@ -24,7 +25,7 @@ import java.io.*;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
-public class IEAppLoader implements ApplicationLoadListener {
+public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerListener {
 
 
     public static VLItem copy_item;
@@ -43,6 +44,11 @@ public class IEAppLoader implements ApplicationLoadListener {
             public void projectOpened(Project project) {
 
                opened(project);
+
+                FileEditorManager.getInstance(project).addFileEditorManagerListener(IEAppLoader.this);
+
+
+
 
             }
             @Override
@@ -101,6 +107,9 @@ public class IEAppLoader implements ApplicationLoadListener {
         });
 
 
+
+
+
     }
 
     private void onFileChanged(Project project, String filename, String filepath) {
@@ -144,10 +153,6 @@ public class IEAppLoader implements ApplicationLoadListener {
 
 
 
-    public static String getMProjectPath(Project project){
-
-        return project.getBasePath() + RP.Path.iedata;
-    }
 
 
     public static void opened(Project project){
@@ -160,7 +165,7 @@ public class IEAppLoader implements ApplicationLoadListener {
         if( !projects.containsKey(key) ){
 
             MProject mProject = null;
-            String path = getMProjectPath(project);
+            String path = RP.Path.getIeData(project);
             if( new File(path).exists() )
             {
                 mProject = load(project);
@@ -200,7 +205,7 @@ public class IEAppLoader implements ApplicationLoadListener {
 
     public static MProject load(Project project){
 
-        String path = getMProjectPath(project);
+        String path = RP.Path.getIeData(project);
 
         File file = new File(path);
 
@@ -227,18 +232,8 @@ public class IEAppLoader implements ApplicationLoadListener {
 
     public static void save(Project project){
 
-
         MProject mProject = getMProject(project);
-        String txt = JSON.toJSONString(mProject,SerializerFeature.PrettyFormat);
-
-        String path = getMProjectPath(project);
-
-        try {
-            FileUtil.save(txt,path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        mProject.save(project);
 
     }
 
@@ -257,5 +252,45 @@ public class IEAppLoader implements ApplicationLoadListener {
     }
 
 
+    @Override
+    public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+
+
+        Log.i("File opened:%s",file.getPath());
+        if( source.getSelectedEditor() instanceof VLEditor){
+
+            //((VLEditor) source.getSelectedEditor()).focusEditor();
+
+        }
+
+    }
+
+    @Override
+    public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+
+
+        if( source.getSelectedEditor() instanceof MessageCenter.IMessage) {
+            MessageCenter.unregister( source.getProject(),  ( MessageCenter.IMessage )source.getSelectedEditor() );
+        }
+
+    }
+
+    @Override
+    public void selectionChanged(@NotNull FileEditorManagerEvent event) {
+
+
+
+        if( event.getOldEditor()  instanceof MessageCenter.IMessage ){
+
+            MessageCenter.unregister( event.getManager().getProject(),  ( MessageCenter.IMessage )event.getOldEditor() );
+        }
+        if( event.getNewEditor() instanceof MessageCenter.IMessage ){
+
+            MessageCenter.register(event.getManager().getProject(),( MessageCenter.IMessage )event.getNewEditor());
+        }
+
+
+
+    }
 }
 

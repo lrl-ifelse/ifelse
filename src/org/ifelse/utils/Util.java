@@ -15,6 +15,11 @@
  */
 package org.ifelse.utils;
 
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
+
 public class Util {
 
     public static boolean isMac(){
@@ -22,6 +27,11 @@ public class Util {
         return ( System.getProperty("os.name").toLowerCase().indexOf("mac") > -1 );
 
     }
+    public static void open(Project project, String path) {
 
+        VirtualFile vf = VirtualFileManager.getInstance().findFileByUrl("file://" + path);
+        FileEditorManager.getInstance(project).openFile(vf, true);
+
+    }
 
 }

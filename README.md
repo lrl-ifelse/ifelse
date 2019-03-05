@@ -16,5 +16,82 @@
 ![avatar](./images/flow_init.jpg) 
 
 
+### 在流程中定义变量
+    $ 流程内可见变量   例如：$a,$b
+    # 应用内静态变量   例如：#a,#b 
+### 节点实现
+    
+    节点配置json
+    {
+        "classz": "org.ifelse.points.ObjectRead",
+        "icon": "/iedata/icons/arrayobj.png",
+        "id": "500101",
+        "name": "对象取值",
+        "doubleclick": "R.open_point",
+        "mproperties": [
+
+            {
+                "key":"data",
+                "name":"data"
+            },
+            {
+                "key":"field",
+                "name":"field"
+            },{
+                "key":"value",
+                "name":"value"
+            },{
+                "key":"descript",
+                "name":"descript",
+                "value": "对象取值"
+            }
+        ]
+    },
+    
+    节点实现代码
+    public class ObjectRead extends FlowPoint {
+    
+    
+        final static String key_data = "data";
+        final static String key_field = "field";
+        final static String key_value = "value";
+    
+        @Override
+        public void run(FlowBox flowBox) throws Exception {
+    
+    
+            Object obj = flowBox.getValue(params.get(key_data));
+            String field = params.get(key_field);
+            String value = params.get(key_value);
+    
+            String[] fields = field.split(",");
+            String[] values = value.split(",");
+    
+    
+            if( obj != null )
+            {
+                Class classz = obj.getClass();
+                for(int i=0;i<fields.length;i++)
+                {
+    
+                    Field ff = classz.getDeclaredField(fields[i]);
+                    ff.setAccessible(true);
+                    Object vobj = ff.get(obj);
+                    flowBox.setValue(values[i],vobj);
+                }
+    
+    
+            }
+    
+            flowBox.notifyFlowContinue();
+    
+    
+        }
+    }    
+    
+    节点配置数据
+![avatar](./images/point_set.jpg) 
+    
+
 #### 插件地址
 [下载](./ifelse.zip)

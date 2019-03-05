@@ -15,10 +15,7 @@
  */
 package org.ifelse;
 
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.FileEditorPolicy;
-import com.intellij.openapi.fileEditor.FileEditorProvider;
+import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import groovy.lang.GroovyClassLoader;
@@ -29,6 +26,7 @@ import org.ifelse.editors.VLEditor;
 import org.ifelse.model.MEditor;
 import org.ifelse.model.MProject;
 import org.ifelse.utils.GroovyUtil;
+import org.ifelse.utils.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -44,7 +42,7 @@ public class IEProvider implements FileEditorProvider {
     @Override
     public FileEditor createEditor(@NotNull Project project, @NotNull VirtualFile virtualFile) {
 
-
+        FileEditor fileEditor  = null;
 
         MProject mProject = IEAppLoader.getMProject(project);
         MEditor editor =  mProject.getEditor(virtualFile.getName());
@@ -52,13 +50,17 @@ public class IEProvider implements FileEditorProvider {
         if(editor !=null) {
             switch (editor.type) {
                 case "TABLE":
-                    return new TableEditor(project, virtualFile, editor);
+                    fileEditor =  new TableEditor(project, virtualFile, editor);
+                    break;
                 case "FLOW":
-                    return new VLEditor(project, virtualFile, editor);
+                    fileEditor =  new VLEditor(project, virtualFile, editor);
+                    break;
             }
         }
+        else
+            fileEditor =  new VLEditor(project, virtualFile, editor);
+        return fileEditor;
 
-        return new VLEditor(project, virtualFile, editor);
 
 
     }
@@ -72,6 +74,6 @@ public class IEProvider implements FileEditorProvider {
     @NotNull
     @Override
     public FileEditorPolicy getPolicy() {
-         return FileEditorPolicy.PLACE_AFTER_DEFAULT_EDITOR;
+         return FileEditorPolicy.PLACE_BEFORE_DEFAULT_EDITOR;
     }
 }

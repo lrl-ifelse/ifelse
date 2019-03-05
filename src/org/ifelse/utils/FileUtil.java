@@ -28,12 +28,6 @@ public class FileUtil {
 
     }
 
-    public static void open(Project project, String path) {
-
-        VirtualFile vf = VirtualFileManager.getInstance().findFileByUrl("file://" + path);
-        FileEditorManager.getInstance(project).openFile(vf, true);
-
-    }
 
     public static void empty(String s) {
 
@@ -85,8 +79,15 @@ public class FileUtil {
     public static String read(String from) {
 
 
+
         try {
             VirtualFile vf = VirtualFileManager.getInstance().findFileByUrl("file://" + from);
+
+//            try {
+//                vf.refresh(false, false);
+//            }catch (Exception e){
+//                Log.i(e.toString());
+//            }
 
             final Document document = FileDocumentManager.getInstance().getDocument(vf);
 
@@ -94,17 +95,13 @@ public class FileUtil {
 
         }catch (Exception e){
 
-            //e.printStackTrace();
-
             Project project = IEAppLoader.getProjectByPath(from);
-
             Log.console(project,e);
 
         }
 
-        /*
+       /*
 
-        File file_to = new File(from);
 
         try {
             FileInputStream fis = new FileInputStream(from);
@@ -136,4 +133,8 @@ public class FileUtil {
     }
 
 
+    public static void refresh(String dir) {
+        VirtualFile vf = VirtualFileManager.getInstance().findFileByUrl("file://" + dir);
+        vf.refresh(true,true);
+    }
 }

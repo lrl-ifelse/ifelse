@@ -19,7 +19,6 @@ public class EditorFactory {
         String path = RP.Path.getPath(project,editor);
 
         Log.i("open file:%s",path);
-
         File file = new File(path);
 
         boolean exist = file.exists();
@@ -34,10 +33,10 @@ public class EditorFactory {
         }
 
         VirtualFile vf = VirtualFileManager.getInstance().refreshAndFindFileByUrl("file://" + path);
-       // if( !exist )
-       //     vf.refresh(false,false);
 
-        FileEditorManager.getInstance(project).openFile(vf, true);
+        FileEditorManager.getInstance(project).openFile(vf, true,false);
+
+
 
 
     }

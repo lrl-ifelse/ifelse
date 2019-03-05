@@ -1,21 +1,23 @@
 package org.ifelse.windows;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import org.ifelse.IEAppLoader;
+import org.ifelse.RP;
 import org.ifelse.message.MessageCenter;
 import org.ifelse.message.MsgEvent;
 import org.ifelse.model.MFlowPoint;
 import org.ifelse.model.MProject;
 import org.ifelse.model.MProperty;
-import org.ifelse.ui.KV;
-import org.ifelse.ui.KVFactory;
-import org.ifelse.ui.PropertyCellEditor;
+import org.ifelse.ui.*;
+import org.ifelse.utils.GroovyUtil;
 import org.ifelse.utils.Icons;
 import org.ifelse.utils.ListMap;
+import org.ifelse.utils.Log;
 import org.ifelse.vl.VLItem;
 import org.ifelse.vl.VLPoint;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +33,7 @@ public class PropertyWindow implements ToolWindowFactory, MessageCenter.IMessage
     MProject mProject;
     Project project;
     JLabel label;
+    ToolbarButton btn_source;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -72,6 +75,12 @@ public class PropertyWindow implements ToolWindowFactory, MessageCenter.IMessage
         toolBar.add(label);
 
         toolBar.addSeparator();
+
+        btn_source = new ToolbarButton(AllIcons.Modules.Sources);
+
+
+        toolBar.add(btn_source);
+
 
         panel.add(toolBar, BorderLayout.NORTH);
 
@@ -146,12 +155,42 @@ public class PropertyWindow implements ToolWindowFactory, MessageCenter.IMessage
 
                 if( mFlowPoint != null )
                 {
-                    label.setText(mFlowPoint.name +" "+mFlowPoint.classz);
+                    label.setText( mFlowPoint.id+ " (" +mFlowPoint.name +") "+(mFlowPoint.classz != null ? mFlowPoint.classz : "" ));
                 }
+                btn_source.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(JComponent component) {
 
+
+                        if( !isNULL(mFlowPoint.doubleclick) ){
+
+                            String[] script = mFlowPoint.doubleclick.split("\\.");
+
+                            String filepath = String.format("%s%s/%s.groovy",project.getBasePath(), RP.Path.script,script[0]);
+
+                            Log.i("run script:%s",filepath);
+
+                            try {
+                                GroovyUtil.run(project,filepath,script[1],point,mFlowPoint);
+
+                            } catch (Exception e) {
+
+                                Log.console(project,e);
+                            }
+
+
+                        }
+
+
+
+                    }
+                });
+                btn_source.setVisible(true);
             }
             else if( item.isLine() ) {
                 label.setText("Line");
+
+                btn_source.setVisible(false);
             }
 
 

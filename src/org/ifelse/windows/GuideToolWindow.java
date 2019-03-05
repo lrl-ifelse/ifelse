@@ -9,23 +9,27 @@ import com.intellij.ui.SingleSelectionModel;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import org.ifelse.IEAppLoader;
+import org.ifelse.RP;
 import org.ifelse.editors.EditorFactory;
 import org.ifelse.model.MEditor;
 import org.ifelse.model.MProject;
 import org.ifelse.ui.EditorItem;
+import org.ifelse.ui.OnClickListener;
 import org.ifelse.ui.ToolbarButton;
-import org.ifelse.utils.Icons;
-import org.ifelse.utils.Log;
+import org.ifelse.utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.InputStream;
 
 public class GuideToolWindow implements ToolWindowFactory {
     @Override
@@ -44,97 +48,133 @@ public class GuideToolWindow implements ToolWindowFactory {
         MProject mProject = IEAppLoader.getMProject(project);
 
         JPanel panel = new JPanel();
+        JToolBar toolBar = new JToolBar();
+        JTable table = new JTable();
 
         panel.setLayout(new BorderLayout());
 
-        JToolBar toolBar = new JToolBar();
 
 
-        ToolbarButton btn_add = new ToolbarButton(AllIcons.ToolbarDecorator.Add);
-        ToolbarButton btn_remove = new ToolbarButton(AllIcons.ToolbarDecorator.Remove);
+
+        ToolbarButton btn_edit = new ToolbarButton(AllIcons.ToolbarDecorator.Edit);
+        ToolbarButton btn_init = new ToolbarButton(Icons.icon_logo,100);
+        btn_init.setText("create ifelse ");
+
+
+        btn_edit.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(JComponent component) {
+
+                String path = RP.Path.getIEPath(project);
+                File file = new File(path);
+                if( file.exists() )
+                    Util.open(project,path);
+
+               // InputStream inputStream = getClass().getClassLoader().getResourceAsStream("/res.zip");
+               // UnZip.unzip(inputStream,path+"/Res");
+
+            }
+        });
+
+        btn_init.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(JComponent component) {
+
+                mProject.create(project);
+                component.getParent().remove(component);
+
+                ((DefaultTableModel)table.getModel()).fireTableDataChanged();
+
+            }
+        });
 
         toolBar.setFloatable(false);
         toolBar.addSeparator();
-        toolBar.add(btn_add);
-        toolBar.add(btn_remove);
+        toolBar.add(btn_edit);
+        //toolBar.add(btn_remove);
+        if( !mProject.isIEProject )
+        {
+            toolBar.add(btn_init);
+        }
+
+
         toolBar.addSeparator();
 
         panel.add(toolBar, BorderLayout.NORTH);
 
 
-        JTable table = new JTable();
 
 
-        table.setModel(new AbstractTableModel() {
-            @Override
-            public int getRowCount() {
-                return mProject.editors==null ? 0 : mProject.editors.size();
-            }
-
-            @Override
-            public int getColumnCount() {
-                return 1;
-            }
-
-            @Override
-            public Object getValueAt(int rowIndex, int columnIndex) {
-                return  mProject.editors.get(rowIndex);
-            }
 
 
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return false;
-            }
 
-
-        });
-
-        table.setDefaultRenderer(Object.class, new TableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                return new EditorItem((MEditor) value);
-            }
-        });
-
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-
-                int rowIndex = table.getSelectedRow();
-
-                if( rowIndex > -1 ){
-
-
-                   MEditor editor =  mProject.editors.get(rowIndex);
-
-                   Log.i("click row:%s",editor);
-
-
-                    EditorFactory.open(project,editor);
-
+            table.setModel(new DefaultTableModel() {
+                @Override
+                public int getRowCount() {
+                    return mProject.editors == null ? 0 : mProject.editors.size();
                 }
 
-            }
-        });
+                @Override
+                public int getColumnCount() {
+                    return 1;
+                }
+
+                @Override
+                public Object getValueAt(int rowIndex, int columnIndex) {
+                    return mProject.editors.get(rowIndex);
+                }
 
 
-
-        table.setRowHeight(60);
-
-        table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-
-        table.setTableHeader(null);
-
-        table.setSelectionBackground(new Color(0,0,0,0));
+                @Override
+                public boolean isCellEditable(int rowIndex, int columnIndex) {
+                    return false;
+                }
 
 
+            });
 
-        JScrollPane scrollPane = new JScrollPane(table);
+            table.setDefaultRenderer(Object.class, new TableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                    return new EditorItem((MEditor) value);
+                }
+            });
 
-        panel.add(scrollPane, BorderLayout.CENTER);
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
 
+
+                    int rowIndex = table.getSelectedRow();
+
+                    if (rowIndex > -1) {
+
+
+                        MEditor editor = mProject.editors.get(rowIndex);
+
+                        Log.i("click row:%s", editor);
+
+
+                        EditorFactory.open(project, editor);
+
+                    }
+
+                }
+            });
+
+
+            table.setRowHeight(60);
+
+            table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+
+            table.setTableHeader(null);
+
+            table.setSelectionBackground(new Color(0, 0, 0, 0));
+
+
+            JScrollPane scrollPane = new JScrollPane(table);
+
+            panel.add(scrollPane, BorderLayout.CENTER);
 
 
         return panel;

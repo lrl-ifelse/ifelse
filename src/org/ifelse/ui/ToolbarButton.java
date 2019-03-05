@@ -15,15 +15,28 @@ public class ToolbarButton extends JButton {
     public ToolbarButton(Icon icon) {
         super(icon);
         this.initialize();
+        setWidth(40);
+    }
+    public ToolbarButton(Icon icon,int width) {
+        super(icon);
+        this.initialize();
+        setWidth(width);
     }
 
     protected void initialize() {
 
-        setMaximumSize(new Dimension(40,36));
-        setMinimumSize(new Dimension(40,36));
+
         this.setOpaque(false);
         this.setBackground(new Color(0, 0, 0, 0));
         this.setBorderPainted(false);
+
+    }
+
+
+    public void setWidth(int width){
+
+        setMaximumSize(new Dimension(width,36));
+        setMinimumSize(new Dimension(width,36));
 
     }
 

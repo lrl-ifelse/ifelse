@@ -27,6 +27,8 @@ public class IconFactory {
 
     public static BufferedImage createImage(String path){
 
+        //Log.i("createImage :%s",path);
+
         return createImage(path,0,0);
 
     }
@@ -45,10 +47,13 @@ public class IconFactory {
 
         if( images.containsKey(key) ){
             //Log.console("new  image from cache:%s ",path);
-            return images.get(key);
+            BufferedImage bufferedImage = images.get(key);
+            if( bufferedImage != null )
+                return bufferedImage;
 
         }
-        else{
+
+        {
 
             try {
 

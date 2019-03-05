@@ -12,10 +12,7 @@ import org.ifelse.model.MFlowPoint;
 import org.ifelse.model.MFlowPointGroup;
 import org.ifelse.ui.OnClickListener;
 import org.ifelse.ui.ToolbarButton;
-import org.ifelse.utils.FileUtil;
-import org.ifelse.utils.IconFactory;
-import org.ifelse.utils.Icons;
-import org.ifelse.utils.Log;
+import org.ifelse.utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -50,8 +47,6 @@ public class FlowPointsWindow implements ToolWindowFactory, DragGestureListener,
 
     private JComponent createPanel(Project project) {
 
-        Log.i("FlowPointsWindow INIT");
-
 
         String path = RP.Path.getFlowPointsPath(project);
 
@@ -70,7 +65,7 @@ public class FlowPointsWindow implements ToolWindowFactory, DragGestureListener,
             @Override
             public void onClick(JComponent component) {
 
-                FileUtil.open(project,path);
+                Util.open(project,path);
 
             }
         });
@@ -234,7 +229,6 @@ public class FlowPointsWindow implements ToolWindowFactory, DragGestureListener,
 
                         String iconpath = RP.Path.getIconPath(project, me.icon);
                         img = IconFactory.createImage(iconpath, 20, 20);
-                        // BufferedImage img_ = scaledImage(img, 20, 20, false, RENDERING_HINTS);
 
 
                         ImageIcon icon = new ImageIcon(img);

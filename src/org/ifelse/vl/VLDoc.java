@@ -18,6 +18,7 @@ package org.ifelse.vl;
 import com.intellij.openapi.project.Project;
 import org.ifelse.IEAppLoader;
 import org.ifelse.RP;
+import org.ifelse.model.MDoc;
 import org.ifelse.model.MFlowPoint;
 import org.ifelse.model.MProject;
 import org.ifelse.utils.IconFactory;
@@ -34,12 +35,15 @@ import java.util.List;
 
 public class VLDoc extends JPanel implements DropTargetListener, MouseListener, MouseMotionListener, KeyListener {
 
+    public String title;
+    public String flowid;
     List<VLItem> eles = new ArrayList<VLItem>();
     VLItem item_focus;
 
     VLLine line_new;
 
     VListener listener;
+    private float scale = 1.0f;
 
     public VLDoc(VListener listener) {
 
@@ -67,6 +71,10 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
         */
 
         Graphics2D g2d = (Graphics2D) g;
+
+        if( scale != 1.0f )
+            g2d.scale(scale,scale);
+
         Font font = new Font(Font.DIALOG, Font.BOLD, 16);
         g.setFont(font);
         g2d.translate(0, 0);
@@ -112,6 +120,9 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
             }
             if (value instanceof MFlowPoint) {
+
+
+                zoom();
 
                 MFlowPoint mFlowPoint = (MFlowPoint) value;
 
@@ -162,6 +173,7 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
     int off_x, off_y;
 
+    boolean datachanged;
     @Override
     public void mouseDragged(MouseEvent e) {
 
@@ -171,6 +183,7 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
                 if (item_focus instanceof VLPoint) {
                     item_focus.setXY(e.getX() - item_focus.width / 2, e.getY() - item_focus.height / 2);
+                    datachanged = true;
                 }
 
                 repaint();
@@ -309,6 +322,8 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
                     onFocusChanged(item);
 
+                    listener.onDataChanged();
+
                     repaint();
 
                 }
@@ -336,123 +351,25 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
             break;
             case KeyEvent.VK_UP:{
 
-                if( Util.isMac() ){
-                    if(  !e.isMetaDown() && !e.isAltDown() ){
-                        if( item_focus != null  ) {
-                            item_focus.setXY(item_focus.getX(),item_focus.getY()-1);
-                            repaint();
-                            listener.onDataChanged();
-                        }
-                        return;
-                    }
-                }
-                else{
-                    if(! e.isControlDown() && !e.isAltDown() ){
-                        if( item_focus != null  ) {
-                            item_focus.setXY(item_focus.getX(),item_focus.getY()-1);
-                            repaint();
-                            listener.onDataChanged();
-                        }
-                        return;
-                    }
+
+                if(  e.isAltDown() ){
+                    scale += 0.1f;
+                    repaint();
+                    return;
                 }
 
-
-                repaint();
             }
             break;
             case KeyEvent.VK_DOWN:{
 
-                if( Util.isMac() ){
-                    if(  !e.isMetaDown() && !e.isAltDown() ){
-
-                        if( item_focus != null  ) {
-                            item_focus.setXY(item_focus.getX(),item_focus.getY()+1);
-                            repaint();
-                            listener.onDataChanged();
-                        }
-                        return;
-                    }
+                if(  e.isAltDown() ){
+                    scale -= 0.1f;
+                    repaint();
+                    return;
                 }
-                else{
-
-                    if(! e.isControlDown()  && !e.isAltDown()){
-
-                        if( item_focus != null  ) {
-                            item_focus.setXY(item_focus.getX(),item_focus.getY()+1);
-                            repaint();
-                            listener.onDataChanged();
-                        }
-                        return;
-                    }
-                }
-                repaint();
 
             }
             break;
-            case KeyEvent.VK_LEFT:{
-
-                if( Util.isMac() ){
-                    if(  !e.isMetaDown() && !e.isAltDown() ){
-
-                        if( item_focus != null  ) {
-                            item_focus.setXY(item_focus.getX()-1,item_focus.getY());
-                            repaint();
-                            listener.onDataChanged();
-                        }
-                        return;
-                    }
-                }
-                else{
-
-                    if(! e.isControlDown()  && !e.isAltDown()){
-
-                        if( item_focus != null  ) {
-                            item_focus.setXY(item_focus.getX()-1,item_focus.getY());
-                            repaint();
-                            listener.onDataChanged();
-                        }
-                        return;
-                    }
-                }
-
-
-            }
-            break;
-
-            case KeyEvent.VK_RIGHT:{
-
-                if( Util.isMac() ){
-                    if(  !e.isMetaDown() && !e.isAltDown() ){
-
-                        if( item_focus != null  ) {
-                            item_focus.setXY(item_focus.getX()+1,item_focus.getY());
-                            repaint();
-                            listener.onDataChanged();
-                        }
-
-                        return;
-                    }
-                }
-                else{
-
-                    if(! e.isControlDown()  && !e.isAltDown()){
-
-                        if( item_focus != null  ) {
-                            item_focus.setXY(item_focus.getX()+1,item_focus.getY());
-                            repaint();
-                            listener.onDataChanged();
-                        }
-
-                        return;
-                    }
-                }
-
-
-            }
-            break;
-
-
 
 
 
@@ -461,6 +378,18 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
 
 
+
+    }
+
+    public MDoc getMDoc() {
+
+        MDoc mDoc = new MDoc();
+
+        mDoc.title = title;
+        mDoc.flowid = flowid;
+        mDoc.items = eles;
+
+        return mDoc;
 
     }
 
@@ -590,30 +519,57 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
         }
 
-        if( e.getClickCount() == 2 ){
+        if( e.getClickCount() == 2  ){
 
 
-            if( item_focus.isLine() ){
-
+            if( scale != 1.0f ) {
+                zoom();
+                return;
+            }
+            if( item_focus != null &&  item_focus.isLine() ){
                 repaint();
                 return;
             }
+            if( item_focus != null && listener != null ) {
+                listener.onDoubleClick(item_focus);
+                return;
+            }
 
-            if( item_focus != null && listener != null )
-                listener.onDoubleClick( item_focus );
-//            else if( RP.scale != 1.0f ) {
-//
-//                RP.zoom();
-//                repaint();
-//                return;
-//            }
+        }
 
-
+        if( datachanged ) {
+            listener.onDataChanged();
+            return;
         }
 
 
 
     }
+
+    public void zoom(){
+
+        if( scale != 1.0f ) {
+            scale = 1.0f;
+            repaint();
+        }
+
+    }
+    public void zoomin(){
+
+            scale += 0.1f;
+            repaint();
+
+    }
+    public void zoomout(){
+
+
+            scale -= 0.1f;
+            repaint();
+
+
+    }
+
+
 
     @Override
     public void mouseEntered(MouseEvent e) {

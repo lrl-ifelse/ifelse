@@ -25,6 +25,7 @@ import org.ifelse.model.*;
 import org.ifelse.model.MFlowPointGroup;
 import org.ifelse.utils.FileUtil;
 import org.ifelse.utils.Icons;
+import org.ifelse.utils.Log;
 import org.ifelse.vl.VLItem;
 
 import java.util.ArrayList;
@@ -56,16 +57,15 @@ public class RP {
             return project.getBasePath()+icon;
 
         }
+
+        public static String getIEPath(Project project) {
+            return project.getBasePath()+ie;
+        }
+        public static String getIeData(Project project) {
+            return project.getBasePath()+iedata;
+        }
     }
 
-
-
-    public static void init(Project project){
-
-
-
-
-    }
 
 
     public static class Data{
@@ -183,16 +183,23 @@ public class RP {
 
 
 
-        public static MDoc loadDoc(Project project, String path) throws ClassNotFoundException {
+        public static MDoc loadDoc( String path) throws ClassNotFoundException {
 
 
-            String txt = FileUtil.read(project.getBasePath()+path);
 
-            MDoc mDoc = new MDoc();
+
+                Log.i("RP.loadDoc :%s",path);
+
+                String txt = FileUtil.read(path);
+
+                MDoc mDoc = new MDoc();
 
                 JSONObject jsonobj = (JSONObject) JSON.parse(txt);
 
-                mDoc.title = jsonobj.getString("title");
+                if( jsonobj.containsKey("title") )
+                     mDoc.title = jsonobj.getString("title");
+                if( jsonobj.containsKey("flowid") )
+                    mDoc.flowid = jsonobj.getString("flowid");
 
                 JSONArray array = jsonobj.getJSONArray("items");
 

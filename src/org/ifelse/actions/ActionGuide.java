@@ -21,11 +21,18 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.wm.ToolWindowManager;
 import org.ifelse.IEAppLoader;
+import org.ifelse.RP;
+import org.ifelse.editors.EditorFactory;
+import org.ifelse.model.MEditor;
+import org.ifelse.model.MProject;
 import org.ifelse.ui.MsgDialog;
 import org.ifelse.utils.Icons;
 import org.ifelse.utils.Log;
 
+import org.ifelse.utils.Util;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 public class ActionGuide extends AnAction {
     @Override
@@ -33,9 +40,18 @@ public class ActionGuide extends AnAction {
 
         Log.i("action performed");
 
+
+
+            // Util.open(anActionEvent.getProject(), path);
+
+        MProject mProject = IEAppLoader.getMProject(anActionEvent.getProject());
+        if( mProject.isIEProject ) {
+            MEditor editor = IEAppLoader.getMProject(anActionEvent.getProject()).getEditorByName("Flows");
+            EditorFactory.open(anActionEvent.getProject(), editor);
+        }
+
+
         ToolWindowManager.getInstance(anActionEvent.getProject()).getToolWindow("Guide").show(null);
-
-
 
 
     }

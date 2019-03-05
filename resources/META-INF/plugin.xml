@@ -37,7 +37,7 @@
     <fileEditorProvider implementation="org.ifelse.IEProvider"/>
 
 
-    <toolWindow id="Guide" anchor="right"    factoryClass="org.ifelse.windows.GuideToolWindow" secondary="false"  />
+    <toolWindow id="Guide" anchor="right"    factoryClass="org.ifelse.windows.GuideToolWindow" secondary="false"    />
     <toolWindow id="FlowPoint" anchor="left" factoryClass="org.ifelse.windows.FlowPointsWindow" secondary="true"/>
     <toolWindow id="Property" anchor="right" factoryClass="org.ifelse.windows.PropertyWindow" secondary="true"/>
 
@@ -81,6 +81,26 @@
 
       <add-to-group group-id="MainToolBar" anchor="last"/>
     </group>
+
+
+    <group id="ifelse_menu" text="ifelse"  popup="true" description="ifelse menu">
+
+      <separator  />
+      <add-to-group group-id="ProjectViewPopupMenu" anchor="first" />
+      <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+      <separator  />
+
+
+      <action class="org.ifelse.actions.ActionBind"  id="org.ifelse.actions.ActionBind" description="BindView"
+              text="BindView"  popup="true"     />
+      <action class="org.ifelse.actions.ActionFind"  id="org.ifelse.actions.ActionFind" description="FindView"
+              text="FindView"  popup="true"    />
+
+
+
+    </group>
+
+
 
   </actions>
 

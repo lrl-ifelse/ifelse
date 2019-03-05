@@ -21,9 +21,12 @@ import org.ifelse.IEAppLoader;
 import org.ifelse.RP;
 import org.ifelse.model.MFlowPoint;
 import org.ifelse.model.MProperty;
+import org.ifelse.model.MVar;
 import org.ifelse.utils.IconFactory;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VLPoint extends VLItem {
 
@@ -113,5 +116,8 @@ public class VLPoint extends VLItem {
 
         return point;
     }
+
+
+
 
 }
