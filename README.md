@@ -12,7 +12,7 @@
 ![avatar](./images/forms.jpg) 
 #### 3.流程管理  业务，双击进入具体流程编辑。
 ![avatar](./images/flows.jpg)
-#### 4.流程实现 实现通用的流程节点，把这些节点按照画流程图的方式实现具体业务避免业务代码的编写。双击查看节点实现。
+#### 4.流程实现 实现通用的流程节点，把这些节点按照画流程图的方式实现具体业务避免业务代码的编写,右键拖拽实现连线。双击查看节点实现。
 ![avatar](./images/flow_init.jpg) 
 
 
@@ -51,7 +51,6 @@
     节点实现代码
     public class ObjectRead extends FlowPoint {
     
-    
         final static String key_data = "data";
         final static String key_field = "field";
         final static String key_value = "value";
@@ -59,35 +58,29 @@
         @Override
         public void run(FlowBox flowBox) throws Exception {
     
-    
-            Object obj = flowBox.getValue(params.get(key_data));
-            String field = params.get(key_field);
-            String value = params.get(key_value);
+            Object obj = getVarValue(flowBox,key_data);
+            String field = getVarString(flowBox,key_field);
+            String value = getVarString(flowBox,key_value);
     
             String[] fields = field.split(",");
             String[] values = value.split(",");
     
-    
-            if( obj != null )
-            {
+            if( obj != null ) {
                 Class classz = obj.getClass();
-                for(int i=0;i<fields.length;i++)
-                {
+                for(int i=0;i<fields.length;i++){
     
                     Field ff = classz.getDeclaredField(fields[i]);
                     ff.setAccessible(true);
                     Object vobj = ff.get(obj);
-                    flowBox.setValue(values[i],vobj);
+                    setValue(flowBox,values[i],vobj);
+    
                 }
-    
-    
             }
     
             flowBox.notifyFlowContinue();
-    
-    
         }
-    }    
+    }
+   
     
     节点配置数据
 ![avatar](./images/point_set.jpg) 
