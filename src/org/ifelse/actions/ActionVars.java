@@ -27,9 +27,7 @@ public class ActionVars extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
 
 
-        Log.i("action performed");
-
-        Log.console(anActionEvent.getProject(),"ABC :%s","AAA");
+       // Log.console(anActionEvent.getProject(),"ABC :%s","AAA");
 
     }
 

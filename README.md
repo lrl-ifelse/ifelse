@@ -1,5 +1,12 @@
 # ifelse
- android studio 辅助开发插件
+ android studio 辅助开发插件 
+## 目标
+    复杂业务可视化
+    代码与用户交互一体化
+    基础代码可配置模版化
+    
+    
+    
 ## 基于事件驱动开发模式，集成页面管理、流程管理、业务流程绘制、代码模版。
     
     基于模版代码风格统一，模版语言为groovy。
@@ -86,6 +93,42 @@
     节点配置数据
 ![avatar](./images/point_set.jpg) 
     
+## 项目配置
+
+![avatar](./images/guide.jpg) ![avatar](./images/flowpoints.jpg) 
+
+    /iedata/project.json 配置基本数据  事件、页面管理、流程管理为默认数据。
+        "editors"    编辑器
+                {
+                        "defPoint":"900101",     //默认实现节点及配置数据  points.json中定义
+                        "descript":"forms manager",//显示名称
+                        "name":"Forms",      //保存文件名
+                        "type":"FLOW"    //TABLE,FLOW 表格数据，管理数据
+                },
+            
+        "fieldTypes" 可选字段类型设置
+                {
+                    "name":"boolean",      //名称
+                    "value":"true,false"   //值  
+                },
+                {
+                    "name":"Event",
+                    "path":"/iedata/Event.ie",  // 数据地址
+                    "value":"id|name"           // 数据字段：数据及显示
+                },
+                		
+        
+    /iedata/points.json  配置流程节点
+               
+               配置节点组
+               配置节点实现类、名称、图标、可配置项
+               
+               
+               
+    
+    
+
+
 
 #### 插件地址
 [下载](./ifelse.zip)

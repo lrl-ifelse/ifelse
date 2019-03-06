@@ -83,7 +83,7 @@ public class ActionRun extends AnAction {
     public ActionRun(){
 
 
-        getTemplatePresentation().setIcon(AllIcons.Toolwindows.ToolWindowRun);
+        getTemplatePresentation().setIcon(AllIcons.General.Run);
 
     }
 
