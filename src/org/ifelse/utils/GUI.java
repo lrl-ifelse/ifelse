@@ -9,4 +9,9 @@ public class GUI {
 
         Log.console(project,format,args);
     }
+
+    public static void error(Project project, String format, Object ... args){
+
+        Log.consoleError(project,format,args);
+    }
 }

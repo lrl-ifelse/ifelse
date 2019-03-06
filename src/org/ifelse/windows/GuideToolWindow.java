@@ -65,7 +65,7 @@ public class GuideToolWindow implements ToolWindowFactory {
             @Override
             public void onClick(JComponent component) {
 
-                String path = RP.Path.getIEPath(project);
+                String path = RP.Path.getIeData(project);
                 File file = new File(path);
                 if( file.exists() )
                     Util.open(project,path);

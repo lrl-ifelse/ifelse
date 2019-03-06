@@ -82,4 +82,18 @@ public class Log {
         console.requestScrollingToEnd();
 
     }
+    public static void consoleError(Project project,String format,Object ... args) {
+
+        if( project == null )
+            return;
+
+        ConsoleViewImpl console = IEAppLoader.getMProject(project).getConsoleView(project);
+        String msg = String.format(format,args);
+        console.print(msg,ConsoleViewContentType.ERROR_OUTPUT);
+        console.print("\n", ConsoleViewContentType.ERROR_OUTPUT);
+        console.requestScrollingToEnd();
+
+    }
+
+
 }

@@ -29,7 +29,6 @@
         "name": "对象取值",
         "doubleclick": "R.open_point",
         "mproperties": [
-
             {
                 "key":"data",
                 "name":"data"
@@ -37,10 +36,12 @@
             {
                 "key":"field",
                 "name":"field"
-            },{
+            },
+            {
                 "key":"value",
                 "name":"value"
-            },{
+            },
+            {
                 "key":"descript",
                 "name":"descript",
                 "value": "对象取值"

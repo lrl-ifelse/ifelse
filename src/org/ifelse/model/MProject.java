@@ -379,6 +379,7 @@ public class MProject {
 
 
                 try {
+                    manager.unregisterToolWindow(WIN_TAG);
                     window = manager.registerToolWindow(WIN_TAG, consoleview.getComponent(), ToolWindowAnchor.BOTTOM);
                     window.setIcon(Icons.icon_logo);
 
