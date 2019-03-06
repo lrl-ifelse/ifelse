@@ -257,11 +257,6 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
 
 
         Log.i("File opened:%s",file.getPath());
-        if( source.getSelectedEditor() instanceof VLEditor){
-
-            //((VLEditor) source.getSelectedEditor()).focusEditor();
-
-        }
 
     }
 
