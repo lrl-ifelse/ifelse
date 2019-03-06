@@ -12,7 +12,7 @@
     基于模版代码风格统一，模版语言为groovy。
     业务可视化绘制。
 
-## 模块 （演示项目截图） [显示项目](https://github.com/fclassroom/speakword)
+## 模块 （演示项目截图） [演示项目](https://github.com/fclassroom/speakword)
 #### 1.事件定义  事件驱动
 ![avatar](./images/event.jpg)
 #### 2.页面管理  配置对应事件、类名、模版生成规范的基础代码。双击进入具体页面。
