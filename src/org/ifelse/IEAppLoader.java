@@ -263,10 +263,9 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
     @Override
     public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
 
-
-        if( source.getSelectedEditor() instanceof MessageCenter.IMessage) {
-            MessageCenter.unregister( source.getProject(),  ( MessageCenter.IMessage )source.getSelectedEditor() );
-        }
+//        if( source.getSelectedEditor() instanceof MessageCenter.IMessage) {
+//            MessageCenter.unregister( source.getProject(),  ( MessageCenter.IMessage )source.getSelectedEditor() );
+//        }
 
     }
 

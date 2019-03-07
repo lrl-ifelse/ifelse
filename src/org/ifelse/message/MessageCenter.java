@@ -91,25 +91,29 @@ public class MessageCenter {
 
     public static void sendMsg(Project project,MsgEvent event, Object value){
 
-        IdeEventQueue.getInstance().doWhenReady(new Runnable() {
+        String key = project.getName();
+        if( stacks.containsKey(key) ){
+            WeakList<IMessage> list = stacks.get(key);
+            for(IMessage im : list) {
 
-            @Override
-            public void run() {
+                Log.i("Editor Imessage:%s",im);
 
-                String key = project.getName();
-                if( stacks.containsKey(key) ){
-                    WeakList<IMessage> list = stacks.get(key);
-                    for(IMessage im : list) {
-
-                        Log.i("Editor Imessage:%s",im);
-
-                        if( im.onMessage(project, event, value) )
-                            break;
-                    }
-                }
-
+                if( im.onMessage(project, event, value) )
+                    break;
             }
-        });
+        }
+
+
+
+//        IdeEventQueue.getInstance().doWhenReady(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//
+//
+//            }
+//        });
 
 
 

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
@@ -67,21 +68,15 @@ public class TableEditor extends IEEditor {
     private void saveData(){
 
 
-        String txt = JSON.toJSONString(datas, SerializerFeature.PrettyFormat);
-
-        final Document document = FileDocumentManager.getInstance().getDocument(virtualFile);
-        final PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-
-
-        new WriteCommandAction.Simple(project, psiFile) {
+        final String txt = JSON.toJSONString(datas, SerializerFeature.PrettyFormat);
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
             @Override
-            protected void run() {
-                document.setText( txt );
+            public void run() {
+                document.setText(txt);
                 FileDocumentManager.getInstance().saveDocument(document);
             }
-        }.execute();
 
-
+        });
 
 
     }

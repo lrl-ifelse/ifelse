@@ -18,9 +18,18 @@ package org.ifelse.actions;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyObject;
+import org.ifelse.RP;
+import org.ifelse.model.MVar;
+import org.ifelse.ui.DialogVars;
+import org.ifelse.utils.GroovyUtil;
 import org.ifelse.utils.Icons;
 import org.ifelse.utils.Log;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.util.List;
 
 public class ActionVars extends AnAction {
     @Override
@@ -28,6 +37,30 @@ public class ActionVars extends AnAction {
 
 
        // Log.console(anActionEvent.getProject(),"ABC :%s","AAA");
+
+
+
+        //GroovyUtil.get(anActionEvent.getProject(),path,method);
+
+
+        String path = anActionEvent.getProject().getBasePath()+ RP.Path.script+ "/R.groovy";
+        String method = "getVars";
+
+        Log.console(anActionEvent.getProject(),path);
+
+
+        try {
+            Object obj = GroovyUtil.get(anActionEvent.getProject(),path,method);
+            if( obj instanceof List){
+
+                DialogVars.showDialog((List<MVar>) obj);
+
+            }
+
+        } catch (Exception e) {
+            Log.console(anActionEvent.getProject(),e);
+        }
+
 
     }
 

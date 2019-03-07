@@ -121,8 +121,8 @@ public class VLLine extends VLItem {
         else{
             painter.setColor( Color.BLUE );
             if( point_from != null && point_to != null ){
-               // if( point_from.is_run_point && point_to.is_run_point &&  point_to.data.id.equals(point_from.next_point_id)  )
-               //     painter.setColor(Color.RED);
+               if( point_from.is_run_point && point_to.is_run_point &&  point_to.id.equals(point_from.next_run_point_id)  )
+                    painter.setColor(Color.RED);
 
             }
         }

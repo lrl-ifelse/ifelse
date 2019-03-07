@@ -146,5 +146,23 @@ public class GroovyUtil {
 
     }
 
+    public static Object get(Project project, String filepath, String method) throws Exception {
+
+
+        ClassLoader parent = GroovyUtil.class.getClassLoader();
+        GroovyClassLoader loader = new GroovyClassLoader(parent);
+
+        Class groovyClass = loader.parseClass(new File(filepath));
+
+        GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
+
+        groovyObject.setProperty("project",project);
+
+        //groovyObject.invokeMethod(method, point);
+        return groovyObject.invokeMethod(method,null);
+
+    }
+
+
 
 }

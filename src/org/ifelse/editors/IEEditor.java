@@ -1,6 +1,8 @@
 package org.ifelse.editors;
 
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorLocation;
 import com.intellij.openapi.fileEditor.FileEditorState;
@@ -19,12 +21,14 @@ public class IEEditor implements FileEditor {
     Project project;
     VirtualFile virtualFile;
     MEditor mEditor;
+    Document document;
 
     public IEEditor(Project project, @NotNull VirtualFile virtualFile, MEditor editor){
 
         this.project = project;
         this.virtualFile = virtualFile;
         mEditor = editor;
+        document =  FileDocumentManager.getInstance().getDocument(virtualFile);
 
     }
 

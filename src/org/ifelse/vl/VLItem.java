@@ -40,6 +40,10 @@ public abstract class VLItem {
 
     public List<MProperty> mproperties;
 
+    //执行流程节点
+    public boolean is_run_point;
+    public String next_run_point_id;
+
     public VLItem(){
 
         classname = this.getClass().getName();

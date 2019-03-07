@@ -32,6 +32,8 @@ import java.awt.dnd.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class VLDoc extends JPanel implements DropTargetListener, MouseListener, MouseMotionListener, KeyListener {
 
@@ -44,6 +46,7 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
     VListener listener;
     private float scale = 1.0f;
+    private boolean import_flow_ids;
 
     public VLDoc(VListener listener) {
 
@@ -346,6 +349,45 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
                 }
 
 
+                if( import_flow_ids ) {
+
+                    clearPointId();
+                    repaint();
+                    import_flow_ids = false;
+                    Log.console(listener.project(),"清除执行log");
+
+                }
+                else {
+                    clearPointId();
+                    import_flow_ids = true;
+                    if (listener != null) {
+
+                        List<String> ids = getIds(Util.getSysClipboardText());
+
+                        VLItem last = null;
+                        for(String id:ids) {
+
+                            for (VLItem item : eles) {
+
+                                if (item.id.equals(id)) {
+                                    item.is_run_point = true;
+
+                                    if( last != null )
+                                        last.next_run_point_id = id;
+
+                                    last = item;
+                                }
+                            }
+                        }
+
+
+                        repaint();
+                    }
+
+                }
+
+
+
 
             }
             break;
@@ -582,4 +624,34 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
     }
 
 
+    public void clearPointId(){
+
+        for(VLItem item:eles){
+
+            item.is_run_point = false;
+
+        }
+
+    }
+
+    public static List<String> getIds(String context) {
+
+
+        Pattern pattern_field = Pattern.compile("point\\(\\d+\\)");
+
+        Matcher matcher = pattern_field.matcher(context);
+        List<String> result = new ArrayList();
+
+        while (matcher.find()) {
+            String field = matcher.group();
+
+
+            String id = field.substring("point(".length(), field.length() - 1);
+            result.add(id);
+            System.out.println(field + "-" + id);
+
+        }
+        return result;
+
+    }
 }

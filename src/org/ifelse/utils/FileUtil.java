@@ -90,7 +90,7 @@ public class FileUtil {
 //            }
 
             final Document document = FileDocumentManager.getInstance().getDocument(vf);
-
+//            document.setReadOnly(true);
             return document.getText();
 
         }catch (Exception e){

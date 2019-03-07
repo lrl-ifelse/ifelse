@@ -1,9 +1,10 @@
 # ifelse
  android studio 辅助开发插件 
 ## 目标
-    复杂业务可视化
-    UI与业务一体集成，实现一个业务处理的连贯性
+    复杂业务可视化，减少代码中的ifelse
+    UI与业务一体化集成，实现一个业务处理的连贯性
     生成代码可配置、模版化
+    
     
     
     
@@ -12,7 +13,7 @@
     基于模版代码风格统一，模版语言为groovy。
     业务可视化绘制。
 
-## 模块 （演示项目截图） [演示项目](https://github.com/fclassroom/speakword)
+## 模块 （演示项目截图） [演示项目](https://github.com/fclassroom/wordspelling)
 #### 1.事件定义  事件驱动
 ![avatar](./images/event.jpg)
 #### 2.页面管理  配置对应事件、类名、模版生成规范的基础代码。双击进入具体页面。
@@ -35,7 +36,7 @@
         "id": "500101",                           //唯一id
         "name": "对象取值",                        //对应名字
         "doubleclick": "R.open_point",            //双击后的处理
-        "mproperties": [                          //输入输出配置
+        "mproperties": [                          //输入输出配置 按照实现类进行配置 
             {
                 "key":"data",
                 "name":"data"
@@ -85,7 +86,7 @@
                 }
             }
     
-            flowBox.notifyFlowContinue();
+            flowBox.next();
         }
     }
    

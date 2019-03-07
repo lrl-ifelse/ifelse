@@ -9,6 +9,7 @@ import com.intellij.ide.IdeEventQueue;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.AsyncExecutionService;
+import com.intellij.openapi.application.TransactionGuard;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
@@ -40,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -409,33 +411,16 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
     public void save(){
 
 
-       // mDoc.clear();
         MDoc mDoc =  doc.getMDoc();
+        final String txt = JSON.toJSONString(mDoc, SerializerFeature.PrettyFormat);
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                document.setText(txt);
+                FileDocumentManager.getInstance().saveDocument(document);
+            }
 
-        String txt = JSON.toJSONString(mDoc, SerializerFeature.PrettyFormat);
-
-        final Document document = FileDocumentManager.getInstance().getDocument(virtualFile);
-        final PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-
-        ApplicationManager.getApplication().runWriteAction(
-                new Runnable() {
-                    @Override
-                    public void run() {
-
-                        document.setText( txt );
-                        FileDocumentManager.getInstance().saveDocument(document);
-                    }
-                }
-        );
-
-
-//        new WriteCommandAction.Simple(project, psiFile) {
-//            @Override
-//            protected void run() {
-//                document.setText( txt );
-//                FileDocumentManager.getInstance().saveDocument(document);
-//            }
-//        }.execute();
+        });
 
 
 
@@ -462,11 +447,6 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
         switch (event) {
 
             case B_PROPERTY_CHANGED: {
-
-                if (FileEditorManager.getInstance(project).getSelectedEditor() == this) {
-
-                    doc.repaint();
-                }
                 save();
 
             }
@@ -504,4 +484,5 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
         }
         return false;
     }
+
 }
