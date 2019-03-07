@@ -30,12 +30,12 @@
     
     节点配置json
     {
-        "classz": "org.ifelse.points.ObjectRead",
-        "icon": "/iedata/icons/arrayobj.png",
-        "id": "500101",
-        "name": "对象取值",
-        "doubleclick": "R.open_point",
-        "mproperties": [
+        "classz": "org.ifelse.points.ObjectRead", // 实现类
+        "icon": "/iedata/icons/arrayobj.png",     //节点图标
+        "id": "500101",                           //唯一id
+        "name": "对象取值",                        //对应名字
+        "doubleclick": "R.open_point",            //双击后的处理
+        "mproperties": [                          //输入输出配置
             {
                 "key":"data",
                 "name":"data"
@@ -133,7 +133,7 @@
 ifelse is released under the [Apache 2.0 license](license.txt).
 
 ```
-Copyright 1999-2019 fclassroom Group Holding Ltd.
+Copyright 1999-2019 fclassroom Group.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
