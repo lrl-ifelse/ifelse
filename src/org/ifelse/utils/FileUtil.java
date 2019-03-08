@@ -79,18 +79,10 @@ public class FileUtil {
     public static String read(String from) {
 
 
-
+        Log.i("read :%s exist:%b",from,new File(from).exists());
         try {
-            VirtualFile vf = VirtualFileManager.getInstance().findFileByUrl("file://" + from);
-
-//            try {
-//                vf.refresh(false, false);
-//            }catch (Exception e){
-//                Log.i(e.toString());
-//            }
-
+            VirtualFile vf = VirtualFileManager.getInstance().refreshAndFindFileByUrl("file://" + from);
             final Document document = FileDocumentManager.getInstance().getDocument(vf);
-//            document.setReadOnly(true);
             return document.getText();
 
         }catch (Exception e){
@@ -134,7 +126,9 @@ public class FileUtil {
 
 
     public static void refresh(String dir) {
+
         VirtualFile vf = VirtualFileManager.getInstance().findFileByUrl("file://" + dir);
-        vf.refresh(true,true);
+        if( vf != null )
+         vf.refresh(false,true);
     }
 }

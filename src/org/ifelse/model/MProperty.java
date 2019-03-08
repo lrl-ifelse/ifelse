@@ -19,6 +19,7 @@ public class MProperty implements Serializable {
     }
     public MProperty(String key){
 
+        visible = true;
         this.key = key;
         this.name = key;
 
@@ -26,6 +27,7 @@ public class MProperty implements Serializable {
     }
     public MProperty(String key,String name,String value){
 
+        visible = true;
         this.key = key;
         this.name = name;
         this.value = value;

@@ -18,6 +18,7 @@ import org.ifelse.message.MessageCenter;
 import org.ifelse.model.MProject;
 import org.ifelse.utils.FileUtil;
 import org.ifelse.utils.Log;
+import org.ifelse.utils.UnZip;
 import org.ifelse.vl.VLItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -159,6 +160,8 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
 
         String key = project.getName();
 
+        project.getProjectFile().refresh(false,true);
+
         projects.remove(key);
 
         Log.i("project :%s opened",key);
@@ -179,6 +182,46 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
             projects.put(key,mProject);
 
         }
+
+    }
+
+    public static void create(Project project) throws IOException {
+
+        //getClass().getClassLoader().getResourceAsStream()
+
+        {
+
+            InputStream inputStream = IEAppLoader.class.getClassLoader().getResourceAsStream("/res.zip");
+            String dir = RP.Path.getIEPath(project);
+            UnZip.unzip(inputStream, dir);
+            inputStream.close();
+
+        }
+
+
+        {
+            String src = project.getBasePath() + "/app/src/main/java";
+            if (new File(src).exists()) {
+
+                InputStream srcStream =IEAppLoader.class.getClassLoader().getResourceAsStream("/src.zip");
+
+                UnZip.unzip(srcStream, src);
+                srcStream.close();
+
+
+            }
+
+        }
+        VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
+        VirtualFileManager.getInstance().syncRefresh();
+
+
+        Log.consoleError(project,"*********************************");
+
+        Log.consoleError(project,"初始化ifelse项目");
+        Log.consoleError(project,"需要导入fastjson 解析流程数据");
+        Log.consoleError(project,"需要添加 Application实现 VL._adapter");
+
 
     }
 

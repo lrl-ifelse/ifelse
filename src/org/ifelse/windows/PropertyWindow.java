@@ -114,7 +114,7 @@ public class PropertyWindow implements ToolWindowFactory, MessageCenter.IMessage
     @Override
     public boolean shouldBeAvailable(@NotNull Project project) {
 
-        return IEAppLoader.isMProject(project);
+        return true;
     }
 
     @Override
@@ -274,4 +274,5 @@ public class PropertyWindow implements ToolWindowFactory, MessageCenter.IMessage
         MessageCenter.sendMsg(project, MsgEvent.B_PROPERTY_CHANGED, property);
 
     }
+
 }

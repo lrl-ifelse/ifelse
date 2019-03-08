@@ -29,9 +29,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class GuideToolWindow implements ToolWindowFactory {
+
+
+    JTable table;
+    MProject mProject;
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
@@ -42,14 +47,14 @@ public class GuideToolWindow implements ToolWindowFactory {
 
     }
 
-    private JComponent createPanel(Project project) {
+    private JComponent createPanel(final Project project) {
 
 
-        MProject mProject = IEAppLoader.getMProject(project);
+        mProject = IEAppLoader.getMProject(project);
 
         JPanel panel = new JPanel();
         JToolBar toolBar = new JToolBar();
-        JTable table = new JTable();
+        table = new JTable();
 
         panel.setLayout(new BorderLayout());
 
@@ -70,9 +75,6 @@ public class GuideToolWindow implements ToolWindowFactory {
                 if( file.exists() )
                     Util.open(project,path);
 
-               // InputStream inputStream = getClass().getClassLoader().getResourceAsStream("/res.zip");
-               // UnZip.unzip(inputStream,path+"/Res");
-
             }
         });
 
@@ -80,8 +82,16 @@ public class GuideToolWindow implements ToolWindowFactory {
             @Override
             public void onClick(JComponent component) {
 
-                mProject.create(project);
+                try {
+                    IEAppLoader.create(project);
+                    IEAppLoader.opened(project);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 component.getParent().remove(component);
+
+                mProject = IEAppLoader.getMProject(project);
 
                 ((DefaultTableModel)table.getModel()).fireTableDataChanged();
 
@@ -188,7 +198,7 @@ public class GuideToolWindow implements ToolWindowFactory {
     @Override
     public boolean shouldBeAvailable(@NotNull Project project) {
 
-        return IEAppLoader.isMProject(project);
+        return true;
     }
 
     @Override

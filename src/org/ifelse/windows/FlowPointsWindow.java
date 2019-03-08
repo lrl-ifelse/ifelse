@@ -266,12 +266,12 @@ public class FlowPointsWindow implements ToolWindowFactory, DragGestureListener,
     public boolean shouldBeAvailable(@NotNull Project project) {
 
 
-        return IEAppLoader.isMProject(project);
+        return true;
     }
 
     @Override
     public boolean isDoNotActivateOnStart() {
-        return false;
+        return true;
     }
 
     @Override
@@ -348,4 +348,6 @@ public class FlowPointsWindow implements ToolWindowFactory, DragGestureListener,
     public void dragDropEnd(DragSourceDropEvent dsde) {
 
     }
+
+
 }

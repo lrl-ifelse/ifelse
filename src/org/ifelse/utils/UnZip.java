@@ -25,8 +25,11 @@ public class UnZip {
             try {
                 while ( ( entry = zipInputStream.getNextEntry()) != null ) {
 
+                    String name = entry.getName();
+                    if( name.charAt(0) == '.' || name.charAt(0) == '_' )
+                        continue;
 
-                    if( entry.isDirectory() )
+                    if(  entry.isDirectory() )
                     {
 
                         String path = unzipdir +"/"+ entry.getName();

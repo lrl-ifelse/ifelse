@@ -80,40 +80,7 @@ public class MProject {
         return String.valueOf(getSequence(project));
     }
 
-    public void create(Project project){
 
-
-        editors = new ArrayList<>();
-        newDefEvents();
-        newDefFormsEditor();
-        newDefFieldTypes();
-
-        newDefFlowPoints(project);
-
-        try {
-            copyRes(project);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        save(project);
-
-        init(project);
-
-    }
-
-    private void copyRes(Project project) throws IOException {
-
-        //getClass().getClassLoader().getResourceAsStream()
-
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("/res.zip");
-        String dir = RP.Path.getIEPath(project);
-        UnZip.unzip(inputStream,dir);
-        inputStream.close();
-        FileUtil.refresh(dir);
-
-
-    }
 
     public void init(Project project){
 
@@ -123,22 +90,11 @@ public class MProject {
 
         this.path = path;
 
-        isIEProject =  new File(path + RP.Path.ie).exists();
+        isIEProject =  new File(path + RP.Path.iedata).exists();
 
         if( !isIEProject )
             return;
-
-
-        if( editors == null ){
-
-           editors = new ArrayList<>();
-           newDefEvents();
-           newDefFormsEditor();
-           newDefFieldTypes();
-           newDefFlowPoints(project);
-
-        }
-        else {
+         {
             loadFlowPoints(project);
 
         }
@@ -180,146 +136,6 @@ public class MProject {
 
     }
 
-    private void newDefFlowPoints(Project project) {
-
-        String path = RP.Path.getFlowPointsPath(project);
-
-        if (!new File(path).exists()) {
-
-            flowpoint_groups = RP.Data.newDefaultFlowPoints(project);
-
-        } else {
-
-            String txt = FileUtil.read(path);
-            flowpoint_groups = JSON.parseArray(txt,MFlowPointGroup.class);
-        }
-
-    }
-
-    private void newDefFormsEditor() {
-
-        MEditor editor = new MEditor();
-
-        editor.name = "Forms";
-        editor.type = MEditor.FLOW;
-        editor.descript = "forms manager";
-
-
-
-        MFlowPoint defPoint = new MFlowPoint();
-        editor.defPoint = "900101";
-
-        defPoint.name =  "form";
-
-        defPoint.icon = Icons.path_form;
-        defPoint.mproperties = new ArrayList<>();
-
-
-        MProperty p_event = new MProperty();
-        p_event.key = "event";
-        p_event.name = "event";
-        p_event.args = "Event";
-
-
-        MProperty p_class = new MProperty();
-        p_class.key = "class";
-        p_class.name = "class";
-        p_class.value = "Form";
-
-        MProperty p_name = new MProperty();
-        p_name.key = "name";
-        p_name.name = "name";
-
-        MProperty p_plate = new MProperty();
-        p_plate.key = "template";
-        p_plate.name = "template";
-
-
-        defPoint.mproperties.add(p_event);
-        defPoint.mproperties.add(p_class);
-        defPoint.mproperties.add(p_name);
-        defPoint.mproperties.add(p_plate);
-
-
-
-        editors.add(editor);
-
-
-
-    }
-
-
-
-    private void newDefFieldTypes() {
-
-        fieldTypes = new ArrayList<>();
-
-        MFieldType type0 = new MFieldType();
-        type0.name = "auto";
-        type0.value = "<%R.getSequence()%>";
-
-        MFieldType type1 = new MFieldType();
-        type1.name = "boolean";
-        type1.value= "true,false";
-
-        MFieldType type2 = new MFieldType();
-        type2.name = "Event";
-        type2.value= "id|name";
-        type2.path="/iedata/Event.ie";
-
-
-        MFieldType editortype = new MFieldType();
-        editortype.name = "Editor";
-        editortype.value= "TABLE,FLOW";
-
-        fieldTypes.add(type0);
-        fieldTypes.add(type1);
-        fieldTypes.add(type2);
-        fieldTypes.add(editortype);
-
-
-    }
-
-
-    private void newDefEvents(){
-
-
-
-        MEditor editor = new MEditor();
-
-        editor.name = "Event";
-        editor.type = MEditor.TABLE;
-        editor.descript = "event editor";
-
-
-        editor.fields = new ArrayList<>();
-        MProperty field_0 = new MProperty();
-        field_0.name = "id";
-        field_0.descript = "key";
-        field_0.args = "auto";
-        field_0.visible = false;
-
-
-        MProperty field_1 = new MProperty();
-        field_1.name = "name";
-        field_1.descript = "event name";
-
-
-        MProperty field_2 = new MProperty();
-        field_2.name = "descript";
-        field_2.descript = "descript event";
-
-
-        editor.fields.add(field_0);
-        editor.fields.add(field_1);
-        editor.fields.add(field_2);
-
-
-        editors.add(editor);
-
-
-
-    }
 
     public void uninit() {
 
