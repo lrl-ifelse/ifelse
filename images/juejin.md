@@ -9,8 +9,10 @@ https://github.com/fclassroom/ifelse
     ifelse 这款插件可以帮你解决这些问题。把流程按照产品定义画出来，按模版生成代码后一行代码进行调用。
     
     sendMessage(Event.B_INIT);
-    当然这些通用节点是需要提前配置、实现的，从节点中拖拽进流程图中。
-
+    
+    当然这些通用节点是需要提前配置、实现的，把节点中拖拽进流程图中配置。
+    
+配置好的节点
 ![](https://user-gold-cdn.xitu.io/2019/3/8/1695b0c089a0116e?w=499&h=397&f=png&s=56778)
 
 
@@ -18,7 +20,6 @@ https://github.com/fclassroom/ifelse
     
     业务可视化绘制、UI与业务一体集成，实现一个业务处理的连贯性。
     复杂业务不用写代码，开发维护省时省力。
-    事件驱动界面耦合度低
     页面统一管理便于查看整个项目的页面层次、结构、显示先后顺序。
     流程统一管理便于定位业务处理逻辑
     基于模版代码风格统一，模版语言为groovy便于扩展IOS等其他平台。
@@ -53,15 +54,16 @@ https://github.com/fclassroom/wordspelling
     
 ![](https://user-gold-cdn.xitu.io/2019/3/8/1695b2690f3faf15?w=357&h=394&f=png&s=43288)
 
-事件 
+事件 事件驱动开发使模块、页面间耦合度降低 
 
 ![](https://user-gold-cdn.xitu.io/2019/3/8/1695b2efb5018694?w=954&h=524&f=png&s=110169)
 
-页面 通过双击或选中后的属性按钮定位页面代码
+页面 可配置页面事件、类名、模版。通过双击或选中后的属性按钮定位页面代码
 
 ![](https://user-gold-cdn.xitu.io/2019/3/8/1695b2f78ba18c74?w=760&h=509&f=png&s=79699)
     
-流程 相关联流程拖拽到一起，通过双击或选中后的属性按钮定位具体流程实现
+流程
+相关联流程拖拽到一起，通过双击或选中后的属性按钮定位具体流程实现。双击节点跳转可配置
 
 ![](https://user-gold-cdn.xitu.io/2019/3/8/1695b2fe8988edf4?w=603&h=385&f=png&s=62269)
 流程实现 
@@ -75,6 +77,8 @@ https://github.com/fclassroom/wordspelling
     
 
 ![](https://user-gold-cdn.xitu.io/2019/3/8/1695b357899eb900?w=2234&h=1212&f=png&s=838438)
+
+流程调试、执行顺序查看。
 
     W/系统初始化-225921130: point(5)[0] 起始点 :Start
     W/系统初始化-225921130: Start params:null
@@ -206,6 +210,8 @@ https://github.com/fclassroom/wordspelling
 运行log
     
 ![](https://user-gold-cdn.xitu.io/2019/3/8/1695b4ad50fe2dae?w=1060&h=736&f=png&s=173936)
+
+[apk下载](https://user-gold-cdn.xitu.io/2019/3/11/1696aaabbe2f9d33)
 
 ## 总结
 

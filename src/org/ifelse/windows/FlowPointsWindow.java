@@ -2,6 +2,8 @@ package org.ifelse.windows;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ui.configuration.actions.IconWithTextAction;
+import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
@@ -24,7 +26,9 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 public class FlowPointsWindow implements ToolWindowFactory, DragGestureListener, DragSourceListener {
@@ -104,6 +108,32 @@ public class FlowPointsWindow implements ToolWindowFactory, DragGestureListener,
                 this);
 
         tree.setRowHeight(22);
+
+
+        //tree.setComponentPopupMenu();
+
+        //JPopupMenu menu = new JPopupMenu();
+        JBPopupMenu menu = new JBPopupMenu("Points");
+
+        AbstractAction item_addg = new AbstractAction("Add Group", AllIcons.ToolbarDecorator.AddIcon) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+        AbstractAction item_addp = new AbstractAction("Add Point", AllIcons.ToolbarDecorator.AddIcon) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+
+//        menu.add( item_addg  );
+//        menu.addSeparator();
+//        menu.add( item_addp  );
+//        tree.setComponentPopupMenu(menu);
+
 
 
         return panel;

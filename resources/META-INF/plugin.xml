@@ -1,19 +1,19 @@
 <idea-plugin>
-  <id>com.your.company.unique.plugin.id</id>
-  <name>Plugin display name here</name>
+  <id>www.fclassroom.com.ifelse</id>
+  <name>ifelse</name>
   <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="dizhanbin@fclassroom.com" url="http://www.fclassroom.com">fclassroom</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      android 辅助开发插件.<br>
+      1.实现了界面、业务的可视化管理<br>
+      2.实现了业务的可视化配置<br>
+      开源地址<br>
+      https://github.com/fclassroom/ifelse
     ]]></description>
 
-  <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
-    ]]>
-  </change-notes>
+  <change-notes>
+</change-notes>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
   <idea-version since-build="173.0"/>

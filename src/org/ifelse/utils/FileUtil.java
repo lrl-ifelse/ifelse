@@ -10,9 +10,7 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.ifelse.IEAppLoader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 
 public class FileUtil {
     public static void save(String context, String filepath) throws Exception {
@@ -130,5 +128,41 @@ public class FileUtil {
         VirtualFile vf = VirtualFileManager.getInstance().findFileByUrl("file://" + dir);
         if( vf != null )
          vf.refresh(false,true);
+    }
+
+
+
+    public static void addActivity(String path,StringBuffer activitystr){
+
+
+        StringBuffer manifest_strings = new StringBuffer();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path),"UTF-8"));
+
+            String line;
+
+            boolean inserted = false;
+
+            while( (line = reader.readLine()) != null )
+            {
+                manifest_strings.append(line).append('\n');
+
+                if( !inserted && line.indexOf("</activity") > -1 ){
+
+                    manifest_strings.append(activitystr).append('\n');
+                    inserted = true;
+
+                }
+
+            }
+            reader.close();
+
+            save(manifest_strings.toString(),path);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

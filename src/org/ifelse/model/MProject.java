@@ -29,6 +29,7 @@ import org.ifelse.IEAppLoader;
 import org.ifelse.RP;
 import org.ifelse.utils.FileUtil;
 import org.ifelse.utils.Icons;
+import org.ifelse.utils.Log;
 import org.ifelse.utils.UnZip;
 
 import java.io.File;
@@ -103,22 +104,29 @@ public class MProject {
 
     }
 
-    private void initFlowPoints(){
+    private String initFlowPoints(){
 
         if( flowpoints != null)
             flowpoints.clear();
         flowpoints = new HashMap<>();
+
+        String result = null;
 
         for(MFlowPointGroup group:flowpoint_groups){
 
             for(MFlowPoint point : group.points){
 
 
-                flowpoints.put(point.id,point);
+                if( flowpoints.containsKey(point.id) ){
+                    result = "发现重复id:"+point.id;
+                }
+                else
+                    flowpoints.put(point.id,point);
 
             }
 
         }
+        return null;
 
 
 
@@ -129,10 +137,22 @@ public class MProject {
 
         String path = RP.Path.getFlowPointsPath(project);
         String txt = FileUtil.read(path);
-        flowpoint_groups = JSON.parseArray(txt,MFlowPointGroup.class);
-        initFlowPoints();
+        try {
 
-        return flowpoint_groups;
+            flowpoint_groups = JSON.parseArray(txt, MFlowPointGroup.class);
+
+            String msg = initFlowPoints();
+            if( msg != null )
+            {
+                Log.console(project,msg);
+            }
+            return flowpoint_groups;
+
+        }catch (Exception e){
+
+            Log.console(project,e);
+        }
+            return null;
 
     }
 
@@ -206,7 +226,9 @@ public class MProject {
         }
 
        // window.setTitle(WIN_TAG);
-        window.show(null);
+        if( window != null ) {
+            window.show(null);
+        }
 
         return consoleview;
 

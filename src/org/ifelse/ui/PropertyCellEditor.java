@@ -146,6 +146,8 @@ public abstract class PropertyCellEditor extends AbstractCellEditor implements T
         {
             JComboBox comboBox = (JComboBox) component;
 
+            if( comboBox.getSelectedIndex() == -1 )
+                return "";
             return kvList.getByIndex(comboBox.getSelectedIndex()).key;
 
 

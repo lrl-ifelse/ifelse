@@ -46,7 +46,14 @@ public class Log {
         if( project == null )
             return;
 
-        ConsoleViewImpl console = IEAppLoader.getMProject(project).getConsoleView(project);
+        MProject mProject = IEAppLoader.getMProject(project);
+
+        if( mProject == null )
+            return;
+        ConsoleViewImpl console =mProject.getConsoleView(project);
+
+        if( console == null )
+            return ;
 
         String msg = ee.toString();
 
