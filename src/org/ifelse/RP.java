@@ -40,7 +40,10 @@ public class RP {
         public static final String ie = "/iedata";
         public static final String iedata = ie +"/project.json";
         public static final String flowpoints = ie+"/points.json";
+
         public static final String script = ie+"/script";
+
+        public static final String menus = script+"/menu.json";
 
 
         public static String getPath(Project project,MEditor editor) {
@@ -66,6 +69,9 @@ public class RP {
         }
 
 
+        public static String getIEMenu(Project project) {
+            return project.getBasePath() + menus;
+        }
     }
 
 

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONReader;
 import com.alibaba.fastjson.JSONWriter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.intellij.ide.ApplicationLoadListener;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.Project;
@@ -13,15 +14,21 @@ import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.impl.file.impl.FileManager;
+import com.intellij.util.EditorPopupHandler;
 import org.ifelse.editors.VLEditor;
 import org.ifelse.message.MessageCenter;
+import org.ifelse.model.MMenu;
+import org.ifelse.model.MMenuItem;
 import org.ifelse.model.MProject;
 import org.ifelse.utils.FileUtil;
+import org.ifelse.utils.GroovyUtil;
 import org.ifelse.utils.Log;
 import org.ifelse.utils.UnZip;
 import org.ifelse.vl.VLItem;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.io.*;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -44,11 +51,63 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
             @Override
             public void projectOpened(Project project) {
 
-               opened(project);
+                opened(project);
 
                 FileEditorManager.getInstance(project).addFileEditorManagerListener(IEAppLoader.this);
 
+                ActionManager am = ActionManager.getInstance();
+                DefaultActionGroup ifelse_menu = (DefaultActionGroup) am.getAction("ifelse_menu");
 
+
+                String path = RP.Path.getIEMenu(project);
+
+
+                if( new File(path).exists() ){
+
+                    String txt = FileUtil.read(path);
+
+                    MMenu mMenu = JSON.parseObject(txt, MMenu.class);
+
+                    if( mMenu != null && mMenu.menus != null ) {
+
+                        ifelse_menu.addSeparator();
+
+                        for (MMenuItem item : mMenu.menus) {
+
+
+                            AnAction anAction = new AnAction(item.title) {
+                                @Override
+                                public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
+
+                                    try {
+
+                                        String[] script = item.action.split("\\.");
+
+                                        String filepath = String.format("%s%s/%s.groovy",project.getBasePath(),RP.Path.script,script[0]);
+
+                                        Log.console(project,"run script:%s %s",filepath,script[1]);
+                                        GroovyUtil.run(project,filepath,script[1],null,null);
+                                    } catch (Exception e) {
+
+                                        Log.console(project,e);
+                                    }
+
+
+
+                                }
+                            };
+
+                            am.registerAction("menu_" + item.hashCode(), anAction);
+                            ifelse_menu.addAction(anAction);
+
+                        }
+
+
+
+                    }
+
+
+                }
 
 
             }

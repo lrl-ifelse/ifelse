@@ -69,18 +69,24 @@
     </group>
 
 
-    <group id="ifelse_menu" text="ifelse"  popup="true" description="ifelse menu">
+    <group id="ifelse_menu" text="ifelse"  popup="true" description="ifelse menu" >
 
-      <separator  />
+      <separator />
+
       <add-to-group group-id="ProjectViewPopupMenu" anchor="first" />
+
       <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-      <separator  />
+
+
 
 
       <action class="org.ifelse.actions.ActionBind"  id="org.ifelse.actions.ActionBind" description="BindView"
               text="BindView"  popup="true"     />
       <action class="org.ifelse.actions.ActionFind"  id="org.ifelse.actions.ActionFind" description="FindView"
               text="FindView"  popup="true"    />
+      <separator  />
+
+
 
 
 

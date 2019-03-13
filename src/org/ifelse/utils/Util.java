@@ -15,6 +15,7 @@
  */
 package org.ifelse.utils;
 
+import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -38,6 +39,13 @@ public class Util {
         FileEditorManager.getInstance(project).openFile(vf, true);
 
     }
+    public static void openUrl(String url){
+
+
+        BrowserUtil.browse(url);
+
+    }
+
     public static String getSysClipboardText() {
         String ret = "";
         Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();
