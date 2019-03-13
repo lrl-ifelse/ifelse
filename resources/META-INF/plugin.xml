@@ -5,15 +5,37 @@
   <vendor email="dizhanbin@fclassroom.com" url="http://www.fclassroom.com">fclassroom</vendor>
 
   <description><![CDATA[
-      android 辅助开发插件.<br>
-      1.实现了界面、业务的可视化管理<br>
-      2.实现了业务的可视化配置<br>
-      开源地址<br>
-      https://github.com/fclassroom/ifelse
+
+
+      <p>android 辅助开发插件.</p>
+      <p>
+        <a href="https://github.com/fclassroom/ifelse">开源地址</a>
+      </p>
+      <p>界面、业务可视化管理</p>
+
+
+      <p><img src="https://github.com/fclassroom/ifelse/raw/master/images/flow_init.jpg" width="420" height="191" /></p>
+      <p>
+        sendMessage(Event.B_INIT); 一行代码实现流程调用
+      </p>
+
+
+
+
     ]]></description>
 
   <change-notes>
-</change-notes>
+    <![CDATA[
+
+<b> &nbsp;1.0</b>
+<ul>
+    <li>界面、业务统一管理</li>
+    <li>复杂业务可视化，减少代码中的ifelse</li>
+    <li>UI与业务一体化集成，实现一个业务处理的连贯性</li>
+    <li>生成代码可配置、模版化</li>
+</ul>
+
+    ]]></change-notes>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
   <idea-version since-build="173.0"/>
