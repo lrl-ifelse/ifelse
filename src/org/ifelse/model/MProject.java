@@ -96,7 +96,11 @@ public class MProject {
         if( !isIEProject )
             return;
          {
-            loadFlowPoints(project);
+           if(  loadFlowPoints(project) == null )
+           {
+               Log.consoleError(project,"load points.json error.");
+               return;
+           }
 
         }
         initFlowPoints();

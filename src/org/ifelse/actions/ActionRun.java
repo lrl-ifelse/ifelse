@@ -45,7 +45,8 @@ public class ActionRun extends AnAction {
 
         if( !mProject.isIEProject ){
 
-            MsgDialog.showMessage("提示","非IFElse 项目,点击向导进行初始化。" );
+            MsgDialog.showMessage("提示","not ifelse project,click \"ifelse guide\"。" );
+
             return;
 
         }

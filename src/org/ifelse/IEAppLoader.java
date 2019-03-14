@@ -260,7 +260,7 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
 
         {
             String src = project.getBasePath() + "/app/src/main/java";
-            if (new File(src).exists()) {
+            //if (new File(src).exists()) {
 
                 InputStream srcStream =IEAppLoader.class.getClassLoader().getResourceAsStream("/src.zip");
 
@@ -268,7 +268,7 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
                 srcStream.close();
 
 
-            }
+            //}
 
         }
         VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
@@ -277,9 +277,9 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
 
         Log.consoleError(project,"*********************************");
 
-        Log.consoleError(project,"初始化ifelse项目");
-        Log.consoleError(project,"需要导入fastjson 解析流程数据");
-        Log.consoleError(project,"需要添加 Application实现 VL._adapter");
+        Log.consoleError(project,"init ifelse ");
+        Log.consoleError(project,"implementation 'com.alibaba:fastjson:1.2.55'");
+        Log.consoleError(project,"Application implements VL._adapter");
 
 
     }
@@ -316,8 +316,11 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
             JSONReader reader = null;
             try {
                 reader = new JSONReader(new FileReader( file ));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                //e.printStackTrace();
+
+                Log.console(project,"load project.json error.");
+                Log.console(project,e);
             }
 
             MProject mProject = reader.readObject(MProject.class);

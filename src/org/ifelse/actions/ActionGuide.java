@@ -38,19 +38,12 @@ public class ActionGuide extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
 
-        Log.i("action performed");
-
-
-
-            // Util.open(anActionEvent.getProject(), path);
 
         MProject mProject = IEAppLoader.getMProject(anActionEvent.getProject());
         if( mProject.isIEProject ) {
             MEditor editor = IEAppLoader.getMProject(anActionEvent.getProject()).getEditorByName("Flows");
             EditorFactory.open(anActionEvent.getProject(), editor);
         }
-
-
         ToolWindowManager.getInstance(anActionEvent.getProject()).getToolWindow("Guide").show(null);
 
 
