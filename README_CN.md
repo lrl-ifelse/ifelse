@@ -105,7 +105,6 @@ https://github.com/fclassroom/wordspelling
     拷贝 log 后 选择对应流程 ctrl + i 导入log
     显示执行顺序加快调试时间
   
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b5ed9ed45f84?w=839&h=464&f=png&s=191935)
 
 在流程中定义变量
 
