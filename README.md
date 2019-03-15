@@ -1,12 +1,17 @@
-# ifelse
- android studio 辅助开发插件 
-## 目标
-    界面、业务统一管理
-    复杂业务可视化，减少代码中的ifelse
+# ifelse 
+    android 辅助开发插件.
+    marketplace搜索 ifelse
+## 功能、目标
+    界面、业务统一可视化管理
+    复杂业务可视化，减少代码中的if else 判断
     UI与业务一体化集成，实现一个业务处理的连贯性
     生成代码可配置、模版化
-    
-    
+
+## 插件地址
+[下载](./ifelse.zip)
+
+[Marketplace](https://plugins.jetbrains.com/plugin/12094-ifelse)
+
     
 
 ## 模块 （演示项目截图） [演示项目](https://github.com/fclassroom/wordspelling)
@@ -121,8 +126,6 @@
                配置节点实现类、名称、图标、可配置项
                
 
-#### 插件地址
-[下载](./ifelse.zip)
 
 
 ### *License*
