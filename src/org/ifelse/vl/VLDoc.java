@@ -349,42 +349,7 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
                 }
 
 
-                if( import_flow_ids ) {
-
-                    clearPointId();
-                    repaint();
-                    import_flow_ids = false;
-                    Log.console(listener.project(),"清除执行log");
-
-                }
-                else {
-                    clearPointId();
-                    import_flow_ids = true;
-                    if (listener != null) {
-
-                        List<String> ids = getIds(Util.getSysClipboardText());
-
-                        VLItem last = null;
-                        for(String id:ids) {
-
-                            for (VLItem item : eles) {
-
-                                if (item.id.equals(id)) {
-                                    item.is_run_point = true;
-
-                                    if( last != null )
-                                        last.next_run_point_id = id;
-
-                                    last = item;
-                                }
-                            }
-                        }
-
-
-                        repaint();
-                    }
-
-                }
+                import_log();
 
 
 
@@ -420,6 +385,48 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
 
 
+
+    }
+
+    public void import_log() {
+
+
+        if( import_flow_ids ) {
+
+            clearPointId();
+            repaint();
+            import_flow_ids = false;
+            Log.console(listener.project(),"清除执行log");
+
+        }
+        else {
+            clearPointId();
+            import_flow_ids = true;
+            if (listener != null) {
+
+                List<String> ids = getIds(Util.getSysClipboardText());
+
+                VLItem last = null;
+                for(String id:ids) {
+
+                    for (VLItem item : eles) {
+
+                        if (item.id.equals(id)) {
+                            item.is_run_point = true;
+
+                            if( last != null )
+                                last.next_run_point_id = id;
+
+                            last = item;
+                        }
+                    }
+                }
+
+
+                repaint();
+            }
+
+        }
 
     }
 

@@ -112,7 +112,7 @@ public class DialogVars extends JDialog {
         dialog.setData( list );
 
 
-        dialog.setTitle("ifelse 静态变量");
+        dialog.setTitle("ifelse static vars");
 
 
         Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();

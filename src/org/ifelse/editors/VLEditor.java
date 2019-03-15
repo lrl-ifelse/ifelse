@@ -185,6 +185,19 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
                 }
             });
 
+            ToolbarButton btn_log = new ToolbarButton(AllIcons.Css.Import);
+
+            btn_log.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(JComponent component) {
+
+                    doc.import_log();
+
+
+                }
+            });
+
+
 
 
             toolBar.setFloatable(false);
@@ -203,8 +216,10 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
 
             toolBar.addSeparator();
 
-            if( mEditor == null || mEditor.defPoint == null )
-            toolBar.add(btn_flows);
+            if( mEditor == null || mEditor.defPoint == null ) {
+                toolBar.add(btn_flows);
+
+            }
 
 
             label = new JLabel();
