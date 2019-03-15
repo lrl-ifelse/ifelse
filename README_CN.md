@@ -1,7 +1,7 @@
 介绍一下项目中使用的android辅助开发插件
 https://github.com/fclassroom/ifelse
 
-![](https://user-gold-cdn.xitu.io/2019/2/28/1693210554692fdc?w=840&h=382&f=png&s=90870) 
+![](./images/flow_init_cn.jpg) 
 
 
     像这样一个流程大概要编写多少行代码？100行？流程有可能任意调整，中间加一些提示、等待，如何做到灵活修改？Rxjava、回调加判断、写详细注释便于以后维护？
@@ -10,34 +10,20 @@ https://github.com/fclassroom/ifelse
     
     sendMessage(Event.B_INIT);
     
-    当然这些通用节点是需要提前配置、实现的，把节点拖拽进流程图中配置。
+    当然这些通用节点是需要提前配置、实现的,把节点拖拽进流程图中配置。
     
     可以降低开发和后期维护成本。
     
-配置好的节点
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b0c089a0116e?w=499&h=397&f=png&s=56778)
+配置好的节点 ![](./images/flowpoints.jpg)
 
 
 ### 使用辅助插件具体有哪些好处
     
     业务可视化绘制、UI与业务一体集成，实现一个业务处理的连贯性。
     复杂业务不用写代码，开发维护省时省力。
-    页面统一管理便于查看整个项目的页面层次、结构、显示先后顺序。
-    流程统一管理便于定位业务处理逻辑
+    页面统一管理便于查看整个项目的页面层次、结构、显示先后顺序、快速定位。
+    流程统一管理便于定位业务处理逻辑。
     基于模版代码风格统一，模版语言为groovy便于扩展IOS等其他平台。
-    
-
-    
-## 实现步骤
-   
-    1.安装插件 插件商店中搜索 ifelse
-    2.数据配置 
-    3.事件定义 每个页面和流程都对应唯一事件。
-    3.节点配置&实现
-    4.页面配置 
-    5.流程配置&业务绘制
-    6.模版定义
-    7.运行按模版生成辅助代码
     
 ### 插件安装
 
@@ -46,29 +32,42 @@ https://github.com/fclassroom/ifelse/blob/master/ifelse.zip
 ### 演示项目下载
 
 https://github.com/fclassroom/wordspelling
+    
+## 实现步骤
+   
+    1.安装插件 插件商店中搜索 ifelse 或者本地下载安装
+    2.数据配置 /iedata/project.json
+    3.事件定义 每个页面和流程都对应唯一事件。
+    3.节点配置&实现
+    4.页面配置  
+    5.流程配置&业务绘制
+    6.模版定义
+    7.运行按模版生成辅助代码
+    
+
 
 ### 查看项目引导
     
     
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b243270019b9?w=179&h=46&f=png&s=6990)
+![](./images/toolbar_guide.jpg)
 
 ### 项目向导 事件、页面、流程编辑器
     
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b2690f3faf15?w=357&h=394&f=png&s=43288)
+![](./images/guide.jpg)
 
 事件 事件驱动开发使模块、页面间耦合度降低 
 
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b2efb5018694?w=954&h=524&f=png&s=110169)
+![](./images/event.jpg)
 
 页面 可配置页面事件、类名、模版。通过双击或选中后的属性按钮定位页面代码
 
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b2f78ba18c74?w=760&h=509&f=png&s=79699)
+![](./images/forms.jpg)
     
-流程
-相关联流程拖拽到一起，通过双击或选中后的属性按钮定位具体流程实现。双击节点跳转可配置
+流程 相关联流程拖拽到一起，通过双击或选中后的属性按钮定位具体流程实现。双击节点跳转可配置
 
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b2fe8988edf4?w=603&h=385&f=png&s=62269)
-流程实现 
+![](./images/flows.jpg) 
+
+流程实现
 
     流程起始点唯一
     通过拖拽加入流程。
@@ -78,7 +77,7 @@ https://github.com/fclassroom/wordspelling
     通过双击或选中后的属性按钮定位节点具体实现类
     
 
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b357899eb900?w=2234&h=1212&f=png&s=838438)
+![](./images/flow_log.jpg)
 
 流程调试、执行顺序查看。
 
@@ -180,15 +179,15 @@ https://github.com/fclassroom/wordspelling
 含有UI交互的流程
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695c229c6d9e4e2?w=748&h=288&f=png&s=59428)
+![](./images/flow_ui.png)
 
 
 模版编辑 实现代码统一、快速集成。
  
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b4655307672b?w=1882&h=1182&f=png&s=679633)
+![](./images/template0.png)
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b4d5c8153a87?w=1632&h=978&f=png&s=464016)
+![](./images/template1.png)
 ### 目录结构
 
     /iedata         插件数据目录
@@ -206,14 +205,14 @@ https://github.com/fclassroom/wordspelling
     src/..../points  通用节点实现目录
 ### 运行
 
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b4a03e1433fa?w=264&h=114&f=png&s=15637)
+![](./images/flow_run.png)
 
 
 运行log
     
-![](https://user-gold-cdn.xitu.io/2019/3/8/1695b4ad50fe2dae?w=1060&h=736&f=png&s=173936)
+![](./images/runlog.png)
 
-[apk下载](https://user-gold-cdn.xitu.io/2019/3/11/1696aaabbe2f9d33)
+
 
 ## 总结
 
