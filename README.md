@@ -6,13 +6,13 @@
     UI与业务一体化集成，实现一个业务处理的连贯性
     生成代码可配置、模版化
 
-## 插件地址&说明
+## 插件地址&介绍
 
 * [Zip下载](./ifelse.zip)
 
 * [Marketplace](https://plugins.jetbrains.com/plugin/12094-ifelse)
 
-* [介绍文章](./README_CN.md)
+* [介绍](./README_CN.md)
 
 
 ### *License*
