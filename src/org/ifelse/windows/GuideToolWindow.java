@@ -1,10 +1,19 @@
 package org.ifelse.windows;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.json.psi.JsonProperty;
+import com.intellij.json.psi.impl.JsonObjectImpl;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.ui.SingleSelectionModel;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
@@ -62,6 +71,12 @@ public class GuideToolWindow implements ToolWindowFactory {
 
 
         ToolbarButton btn_edit = new ToolbarButton(AllIcons.ToolbarDecorator.Edit);
+        btn_edit.setToolTipText("project.json");
+
+        ToolbarButton btn_types = new ToolbarButton(AllIcons.General.Recursive);
+        btn_types.setToolTipText("Optional type of property");
+
+
         ToolbarButton btn_init = new ToolbarButton(Icons.icon_logo,100);
         btn_init.setText("create ifelse ");
 
@@ -70,13 +85,56 @@ public class GuideToolWindow implements ToolWindowFactory {
             @Override
             public void onClick(JComponent component) {
 
+
                 String path = RP.Path.getIeData(project);
                 File file = new File(path);
                 if( file.exists() )
-                    Util.open(project,path);
+                    GUI.goline(project,path,1,4);
+
+
 
             }
         });
+          btn_types.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(JComponent component) {
+
+                String path = RP.Path.getIeData(project);
+                File file = new File(path);
+                if( !file.exists() )
+                    return;
+
+
+                VirtualFile vf = VirtualFileManager.getInstance().findFileByUrl("file://" + path);
+
+                final Document document = FileDocumentManager.getInstance().getDocument(vf);
+                PsiFile psiFile =  PsiDocumentManager.getInstance(project).getPsiFile(document);
+                PsiElement[] elements = psiFile.getChildren();
+                int offset = 0;
+
+                for(PsiElement element : elements){
+
+                    if( element instanceof JsonObjectImpl){
+                        JsonObjectImpl jobj = (JsonObjectImpl) element;
+                        JsonProperty property = jobj.findProperty("fieldTypes");
+                        if( property != null ){
+                            offset = property.getTextOffset();
+                            GUI.goline(project,vf,offset);
+                            break;
+                        }
+                    }
+                }
+
+            }
+        });
+
+
+
+
+
+
+
+
 
         btn_init.setOnClickListener(new OnClickListener() {
             @Override
@@ -101,6 +159,8 @@ public class GuideToolWindow implements ToolWindowFactory {
         toolBar.setFloatable(false);
         toolBar.addSeparator();
         toolBar.add(btn_edit);
+        toolBar.add(btn_types);
+
         //toolBar.add(btn_remove);
         if( !mProject.isIEProject )
         {

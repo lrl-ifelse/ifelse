@@ -148,7 +148,7 @@ public class MProject {
             String msg = initFlowPoints();
             if( msg != null )
             {
-                Log.console(project,msg);
+                Log.consoleError(project,msg);
             }
             return flowpoint_groups;
 

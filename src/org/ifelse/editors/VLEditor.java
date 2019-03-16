@@ -218,7 +218,8 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
 
             if( mEditor == null || mEditor.defPoint == null ) {
                 toolBar.add(btn_flows);
-
+                toolBar.addSeparator();
+                toolBar.add(btn_log);
             }
 
 

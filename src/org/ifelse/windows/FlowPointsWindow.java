@@ -1,11 +1,20 @@
 package org.ifelse.windows;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.json.psi.JsonProperty;
+import com.intellij.json.psi.impl.JsonObjectImpl;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.actions.IconWithTextAction;
 import com.intellij.openapi.ui.JBPopupMenu;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import org.ifelse.IEAppLoader;
@@ -108,6 +117,28 @@ public class FlowPointsWindow implements ToolWindowFactory, DragGestureListener,
                 this);
 
         tree.setRowHeight(22);
+
+        tree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                if( e.getClickCount() == 2 ) {
+                    Object obj = tree.getLastSelectedPathComponent();
+                    if (obj instanceof MFlowPoint) {
+
+                        final MFlowPoint me = (MFlowPoint) obj;
+                        String path = RP.Path.getFlowPointsPath(project);
+                        GUI.goline(project,path,me.classz);
+
+                    }
+                }
+
+            }
+        });
+
+
+
+
 
 
         //tree.setComponentPopupMenu();
@@ -282,6 +313,7 @@ public class FlowPointsWindow implements ToolWindowFactory, DragGestureListener,
 
         tree.setCellRenderer(tree_render);
         tree.setModel(tree_model);
+
 
 
     }

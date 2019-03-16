@@ -225,6 +225,104 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
     @Override
     public void keyPressed(KeyEvent e) {
 
+
+        switch (e.getKeyCode()){
+
+            case KeyEvent.VK_C:{
+
+                if( Util.isMac() ){
+                    if(  !e.isMetaDown() ){
+                        return;
+                    }
+                }
+                else{
+                    if(! e.isControlDown() ){
+                        return;
+                    }
+                }
+
+                IEAppLoader.copy_item = item_focus.clone();
+
+                Log.i("copy item commond + c");
+
+            }
+            break;
+            case KeyEvent.VK_V:{
+
+
+                if( Util.isMac() ){
+                    if(  !e.isMetaDown() ){
+                        return;
+                    }
+                }
+                else{
+                    if(! e.isControlDown() ){
+                        return;
+                    }
+                }
+
+                if( IEAppLoader.copy_item != null ){
+
+
+                    String id = IEAppLoader.getMProject(listener.project()).getSequenceStr(listener.project());
+
+                    VLItem item = IEAppLoader.copy_item.clone();
+
+                    item.id = id;
+
+                    if( point_pressed != null ) {
+
+                        item.x = point_pressed.x-item.width/2;
+                        item.y = point_pressed.y-item.height/2;
+
+                    }
+
+                    eles.add(item);
+
+                    if( item instanceof VLPoint ){
+
+                        VLPoint point = (VLPoint) item;
+                        MFlowPoint mFlowPoint =  IEAppLoader.getMProject( listener.project() ).flowpoints.get(point.flow_point_id);
+                        if( mFlowPoint != null ) {
+                            point.setImage(IconFactory.createImage(RP.Path.getIconPath(listener.project(), mFlowPoint.icon)));
+                        }
+
+                    }
+
+
+                    onFocusChanged(item);
+
+                    listener.onDataChanged();
+
+                    repaint();
+
+                }
+
+
+            }
+            break;
+            case KeyEvent.VK_I:{
+
+
+                if( Util.isMac() ){
+                    if(  !e.isMetaDown() ){
+                        return;
+                    }
+                }
+                else{
+                    if(! e.isControlDown() ){
+                        return;
+                    }
+                }
+                import_log();
+
+            }
+            break;
+
+        }
+
+
+
     }
 
     @Override
@@ -271,91 +369,7 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
                 }
 
                 break;
-            case KeyEvent.VK_C:{
 
-                if( Util.isMac() ){
-                    if(  !e.isMetaDown() ){
-                        return;
-                    }
-                }
-                else{
-                    if(! e.isControlDown() ){
-                        return;
-                    }
-                }
-
-                IEAppLoader.copy_item = item_focus.clone();
-
-
-                Log.i("copy item commond + c");
-
-            }
-            break;
-            case KeyEvent.VK_V:{
-
-
-                if( Util.isMac() ){
-                    if(  !e.isMetaDown() ){
-                        return;
-                    }
-                }
-                else{
-                    if(! e.isControlDown() ){
-                        return;
-                    }
-                }
-
-                if( IEAppLoader.copy_item != null ){
-
-
-                    String id = IEAppLoader.getMProject(listener.project()).getSequenceStr(listener.project());
-
-                    VLItem item = IEAppLoader.copy_item.clone();
-
-                    item.id = id;
-
-                    if( point_pressed != null ) {
-
-                        item.x = point_pressed.x;
-                        item.y = point_pressed.y;
-
-                    }
-
-                    eles.add(item);
-
-                    onFocusChanged(item);
-
-                    listener.onDataChanged();
-
-                    repaint();
-
-                }
-
-
-            }
-            break;
-            case KeyEvent.VK_I:{
-
-
-                if( Util.isMac() ){
-                    if(  !e.isMetaDown() ){
-                        return;
-                    }
-                }
-                else{
-                    if(! e.isControlDown() ){
-                        return;
-                    }
-                }
-
-
-                import_log();
-
-
-
-
-            }
-            break;
             case KeyEvent.VK_UP:{
 
 
@@ -396,7 +410,7 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
             clearPointId();
             repaint();
             import_flow_ids = false;
-            Log.console(listener.project(),"清除执行log");
+            Log.console(listener.project(),"clear log");
 
         }
         else {
@@ -406,20 +420,27 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
                 List<String> ids = getIds(Util.getSysClipboardText());
 
-                VLItem last = null;
-                for(String id:ids) {
+                if( ids != null && ids.size() > 0 ) {
+                    VLItem last = null;
+                    for (String id : ids) {
 
-                    for (VLItem item : eles) {
+                        for (VLItem item : eles) {
 
-                        if (item.id.equals(id)) {
-                            item.is_run_point = true;
+                            if (item.id.equals(id)) {
+                                item.is_run_point = true;
 
-                            if( last != null )
-                                last.next_run_point_id = id;
+                                if (last != null)
+                                    last.next_run_point_id = id;
 
-                            last = item;
+                                last = item;
+                            }
                         }
                     }
+                }
+                else{
+
+                    Log.console(listener.project(),"import none log");
+
                 }
 
 

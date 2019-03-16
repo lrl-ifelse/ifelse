@@ -75,10 +75,22 @@ public class VLLine extends VLItem {
 
         g.setColor(Color.blue);
 
+        float line_wh = 3;
+        g.setStroke(new BasicStroke(line_wh));
+
         if (point_from != null) {
 
-            if (point_to == null && move_cursor != null)
-                drawLine(g, point_from.x, point_from.y, move_cursor.x, move_cursor.y);
+            if (point_to == null && move_cursor != null) {
+
+                //drawLine(g, point_from.x, point_from.y, move_cursor.x, move_cursor.y);
+
+                g.setColor( Color.BLUE );
+                drawLineArrow(g,point_from.x+point_from.width/2,point_from.y+point_from.height/2,move_cursor.x,move_cursor.y,line_wh );
+
+
+
+
+            }
             else if (point_to != null)
                 drawLine(g, point_from.x, point_from.y, point_to.x, point_to.y);
         }
@@ -108,9 +120,6 @@ public class VLLine extends VLItem {
     {
 
         int pos = getTxtPos();
-
-        float line_wh = 3;
-        painter.setStroke(new BasicStroke(line_wh));
 
         //int text_w =  (int)fontMetrics.width(title);
         int text_h = 12;
@@ -398,9 +407,37 @@ public class VLLine extends VLItem {
         }
 
 
+    }
+
+
+    public void drawLineArrow(Graphics2D painter, int fromX, int fromY, int toX, int toY, float line_wh) {
+
+        painter.setStroke(new BasicStroke(line_wh));
+
+        int theta = 30;
+        int headlen = 10;
+
+        double angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI;
+        double angle1 = (angle + theta) * Math.PI / 180;
+        double angle2 = (angle - theta) * Math.PI / 180;
+        double topX = headlen * Math.cos(angle1);
+        double topY = headlen * Math.sin(angle1);
+        double botX = headlen * Math.cos(angle2);
+        double botY = headlen * Math.sin(angle2);
+
+        painter.drawLine(fromX, fromY, toX, toY);
+
+        double arrowX = toX + topX;
+        double arrowY = toY + topY;
+        painter.drawLine((int) arrowX, (int) arrowY, toX, toY);
+
+        arrowX = toX + botX;
+        arrowY = toY + botY;
+        painter.drawLine((int) arrowX, (int) arrowY, toX, toY);
 
 
     }
+
 
     @Override
     public boolean isLine() {
