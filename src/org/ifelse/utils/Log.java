@@ -18,15 +18,8 @@ package org.ifelse.utils;
 import com.intellij.execution.impl.ConsoleViewImpl;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowAnchor;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.ui.components.panels.NonOpaquePanel;
 import org.ifelse.IEAppLoader;
 import org.ifelse.model.MProject;
-
-import javax.swing.*;
-import java.awt.*;
 
 public class Log {
 

@@ -61,7 +61,7 @@ public class VLPoint extends VLItem {
     @Override
     public void paint(Graphics2D g) {
 
-        g.setColor(Color.blue);
+        g.setColor(Color.black);
         g.setStroke(new BasicStroke(3));
         if( image != null ) {
             g.drawImage(image, x+(width-image_width)/2, y+(height-image_height)/2, null);

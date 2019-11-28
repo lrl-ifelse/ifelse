@@ -215,7 +215,7 @@ public class FlowPointsWindow implements ToolWindowFactory, DragGestureListener,
 
                 if (isRoot(parent)) {
 
-                    return flowpoint_groups.size();
+                    return flowpoint_groups==null?0:flowpoint_groups.size();
 
                 } else {
 

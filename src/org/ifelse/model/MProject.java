@@ -63,6 +63,9 @@ public class MProject {
 
 
 
+    public List<String> listeners;
+
+
     public volatile int sequence;
 
     @JSONField(serialize = false)

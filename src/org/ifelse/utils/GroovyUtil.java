@@ -19,6 +19,8 @@ import com.intellij.openapi.project.Project;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import groovy.lang.Script;
+import org.ifelse.model.DartClass;
+import org.ifelse.model.DartField;
 import org.ifelse.model.MFlowPoint;
 import org.ifelse.model.MProperty;
 import org.ifelse.vl.VLItem;
@@ -126,6 +128,22 @@ public class GroovyUtil {
 
     }
 
+    public static void run(Project project, String filepath, String method, DartClass dartClass) throws Exception {
+
+
+        ClassLoader parent = GroovyUtil.class.getClassLoader();
+        GroovyClassLoader loader = new GroovyClassLoader(parent);
+
+        Class groovyClass = loader.parseClass(new File(filepath));
+
+
+        GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
+
+        groovyObject.setProperty("project",project);
+
+        groovyObject.invokeMethod(method, dartClass);
+
+    }
 
     public static void run(Project project, String filepath, String method, VLPoint vlPoint, MFlowPoint mFlowPoint) throws Exception {
 

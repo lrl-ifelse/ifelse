@@ -21,6 +21,7 @@ import org.ifelse.RP;
 import org.ifelse.model.MDoc;
 import org.ifelse.model.MFlowPoint;
 import org.ifelse.model.MProject;
+import org.ifelse.model.Rect;
 import org.ifelse.utils.IconFactory;
 import org.ifelse.utils.Log;
 import org.ifelse.utils.Util;
@@ -40,6 +41,9 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
     public String title;
     public String flowid;
     List<VLItem> eles = new ArrayList<VLItem>();
+
+    List<VLItem> select_group = new ArrayList<>();
+
     VLItem item_focus;
 
     VLLine line_new;
@@ -86,8 +90,35 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
         // Log.i("vldoc width:%d height:%d  font:%s",getWidth(),getHeight(),g.getFont().getName());
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
+
+
+        if( rect_move != null ){
+
+            g.setColor(Color.red);
+            g2d.setStroke(new BasicStroke(3));
+            g.drawRoundRect(rect_move.x,rect_move.y,rect_move.width(),rect_move.height(),6,6);
+
+
+            if( !rect_move.is_focus ) {
+
+                select_group.clear();
+                for (VLItem item : eles) {
+
+                    if (rect_move.isIn(item.x, item.y)) {
+
+                        item.setFocus(true);
+
+                        select_group.add(item);
+
+                    }
+
+                }
+
+            }
+        }
         for (VLItem item : eles)
             item.paint(g2d);
+
 
 
     }
@@ -176,21 +207,21 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
     int off_x, off_y;
 
-    boolean datachanged;
+    public boolean datachanged;
     @Override
     public void mouseDragged(MouseEvent e) {
 
         if (item_focus != null) {
 
-            if (e.getModifiers() == InputEvent.BUTTON1_MASK) {
+            if (e.getModifiers() == InputEvent.BUTTON1_MASK) {// left mouse
 
                 if (item_focus instanceof VLPoint) {
                     item_focus.setXY(e.getX() - item_focus.width / 2, e.getY() - item_focus.height / 2);
                     datachanged = true;
                 }
-
                 repaint();
-            } else {
+
+            } else {  //right mouse
 
                 if (item_focus instanceof VLPoint) {
 
@@ -208,6 +239,42 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
                 }
 
             }
+        }
+        else{
+
+
+            if( rect_move != null &&  rect_move.is_focus ){
+
+
+
+
+                int b_x = rect_move.move_point.x;
+                int b_y = rect_move.move_point.y;
+                rect_move.move(e.getPoint());
+
+                int move_w = rect_move.move_point.x - b_x;
+                int move_h = rect_move.move_point.y - b_y;
+
+
+
+                for(VLItem item : select_group){
+
+                    item.setXY(item.x + move_w, item.y+move_h);
+
+                }
+
+
+                //rect_move.setPoint(point_pressed.x,point_pressed.y, e.getPoint().x,e.getPoint().y);
+                datachanged = true;
+                repaint();
+                return;
+            }
+            if( rect_move == null )
+                rect_move = new Rect();
+            rect_move.setPoint(point_pressed.x,point_pressed.y, e.getPoint().x,e.getPoint().y);
+
+            repaint();
+
         }
 
     }
@@ -241,7 +308,19 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
                     }
                 }
 
-                IEAppLoader.copy_item = item_focus.clone();
+                if( item_focus != null )
+                    IEAppLoader.copy_item = item_focus.clone();
+                else if( select_group.size() > 0 ){
+
+
+                    List list = new ArrayList();
+                    for(VLItem item: select_group){
+                        list.add(item.clone());
+                    }
+                    IEAppLoader.copy_item = list;
+
+                }
+
 
                 Log.i("copy item commond + c");
 
@@ -261,12 +340,12 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
                     }
                 }
 
-                if( IEAppLoader.copy_item != null ){
+                if( IEAppLoader.copy_item != null && IEAppLoader.copy_item instanceof VLItem ){
 
 
                     String id = IEAppLoader.getMProject(listener.project()).getSequenceStr(listener.project());
 
-                    VLItem item = IEAppLoader.copy_item.clone();
+                    VLItem item = ((VLItem)IEAppLoader.copy_item).clone();
 
                     item.id = id;
 
@@ -293,6 +372,53 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
                     onFocusChanged(item);
 
                     listener.onDataChanged();
+
+                    repaint();
+
+                }
+                else if(  IEAppLoader.copy_item != null && IEAppLoader.copy_item instanceof List  ){
+
+
+                    List<VLItem> list = (List<VLItem>) IEAppLoader.copy_item;
+
+                    int off_w = 0 ,off_h = 0 ;
+
+                    if( point_pressed != null ) {
+                        off_w = point_pressed.x - list.get(0).x;
+                        off_h = point_pressed.y - list.get(0).y;
+                    }
+
+                    for(VLItem item : list){
+
+                        String id = IEAppLoader.getMProject(listener.project()).getSequenceStr(listener.project());
+                        item.id = id;
+
+                        eles.add(item);
+
+
+                        if( item instanceof VLPoint ){
+
+                            VLPoint point = (VLPoint) item;
+                            MFlowPoint mFlowPoint =  IEAppLoader.getMProject( listener.project() ).flowpoints.get(point.flow_point_id);
+                            if( mFlowPoint != null ) {
+                                point.setImage(IconFactory.createImage(RP.Path.getIconPath(listener.project(), mFlowPoint.icon)));
+                            }
+
+                        }
+
+
+
+                        if( point_pressed != null ) {
+
+                            item.x += off_w;
+                            item.y += off_h;
+
+                        }
+
+                    }
+                    listener.onDataChanged();
+
+                    IEAppLoader.copy_item = null;
 
                     repaint();
 
@@ -365,6 +491,35 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
                     repaint();
 
+
+                }
+                else if( select_group.size() > 0 ){
+
+                    for(VLItem item : select_group){
+
+                        if( !item.isLine() )
+                        for(int i=eles.size()-1;i>-1;i--){
+
+                            if( eles.get(i) instanceof VLLine ){
+
+                                VLLine line = (VLLine) eles.get(i) ;
+
+                                if( line.point_from == item || line.point_to == item ){
+
+                                    eles.remove(line);
+
+                                }
+
+
+                            }
+
+                        }
+                        eles.remove(item);
+                        listener.onRemoved(item);
+
+                    }
+                    listener.onDataChanged();
+                    repaint();
 
                 }
 
@@ -490,21 +645,38 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
 
 
     Point point_pressed;
+    Rect  rect_move;
 
 
     @Override
     public void mousePressed(MouseEvent e) {
 
 
-        point_pressed = e.getPoint();
 
+        if( rect_move != null )
+        {
+
+            if( rect_move.isIn(e.getX(),e.getY()) )
+            {
+                rect_move.is_focus = true;
+                rect_move.setMovePoint(e.getPoint());
+                return;
+            }
+
+        }
+
+        rect_move = null;
+        for(VLItem item : select_group){
+            item.setFocus(false);
+        }
+        select_group.clear();
+
+        point_pressed = e.getPoint();
         requestFocus();
 
 
         VLItem temp = getFocus(e.getPoint(), null);
-
         onFocusChanged(temp);
-
         repaint();
 
     }
@@ -608,9 +780,13 @@ public class VLDoc extends JPanel implements DropTargetListener, MouseListener, 
         }
 
         if( datachanged ) {
+
+            datachanged = false;
             listener.onDataChanged();
             return;
+
         }
+
 
 
 

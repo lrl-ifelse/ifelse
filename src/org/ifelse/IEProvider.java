@@ -35,7 +35,9 @@ public class IEProvider implements FileEditorProvider {
     @Override
     public boolean accept(@NotNull Project project, @NotNull VirtualFile virtualFile) {
 
-        return virtualFile.getName().endsWith(".ie");
+        MProject mProject = IEAppLoader.getMProject(project);
+
+        return mProject != null && mProject.isIEProject && virtualFile.getName().endsWith(".ie");
     }
 
     @NotNull
@@ -45,6 +47,8 @@ public class IEProvider implements FileEditorProvider {
         FileEditor fileEditor  = null;
 
         MProject mProject = IEAppLoader.getMProject(project);
+        if( mProject == null )
+            return null;
         MEditor editor =  mProject.getEditor(virtualFile.getName());
 
         if(editor !=null) {

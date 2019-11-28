@@ -7,19 +7,25 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.intellij.ide.ApplicationLoadListener;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.Application;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.fileEditor.impl.text.PsiAwareTextEditorImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.file.impl.FileManager;
 import com.intellij.util.EditorPopupHandler;
 import org.ifelse.editors.VLEditor;
 import org.ifelse.message.MessageCenter;
-import org.ifelse.model.MMenu;
-import org.ifelse.model.MMenuItem;
-import org.ifelse.model.MProject;
+import org.ifelse.model.*;
 import org.ifelse.utils.FileUtil;
 import org.ifelse.utils.GroovyUtil;
 import org.ifelse.utils.Log;
@@ -31,12 +37,14 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.io.*;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerListener {
 
 
-    public static VLItem copy_item;
+    public static Object copy_item;
 
     static HashMap<String, MProject> projects = new HashMap<>();
 
@@ -55,10 +63,18 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
 
                 FileEditorManager.getInstance(project).addFileEditorManagerListener(IEAppLoader.this);
 
+
+                /*
                 ActionManager am = ActionManager.getInstance();
+
+
+
+                Log.i("ifelse_menu :%s",am.getAction("ifelse_menu").getClass());
+
+
+                com.intellij.openapi.actionSystem.impl.ChameleonAction s;
+
                 DefaultActionGroup ifelse_menu = (DefaultActionGroup) am.getAction("ifelse_menu");
-
-
                 String path = RP.Path.getIEMenu(project);
 
 
@@ -108,6 +124,8 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
 
 
                 }
+                */
+
 
 
             }
@@ -164,6 +182,7 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
 
 
 
+
         });
 
 
@@ -186,6 +205,39 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
         if( filepath.indexOf("iedata") > -1 ){
 
             Log.console(project,"*%s*",filepath);
+        }
+        if( filename.endsWith(".dart") ){
+
+
+            List<DartClass> classes = FileUtil.getDartClassList(project,filepath);
+
+
+            for(DartClass dartClass : classes){
+
+
+                Log.consoleError(project,dartClass.toString() );
+
+
+                try {
+
+
+                    String jscript = String.format("%s%s/R.groovy",project.getBasePath(),RP.Path.script);
+
+                    Log.console(project,"run script:%s onDartChanged",filepath);
+
+                    GroovyUtil.run(project,jscript,"onDartChanged",dartClass);
+
+                } catch (Exception e) {
+
+                    Log.console(project,e);
+                }
+
+
+            }
+
+
+
+
         }
 
 
@@ -219,8 +271,6 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
 
         String key = project.getName();
 
-        project.getProjectFile().refresh(false,true);
-
         projects.remove(key);
 
         Log.i("project :%s opened",key);
@@ -236,9 +286,11 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
                 mProject = new MProject();
             }
 
+            projects.put(key,mProject);
+
             mProject.init(project);
 
-            projects.put(key,mProject);
+
 
         }
 
@@ -290,6 +342,7 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
         String key = project.getName();
 
         Log.i("project :%s closed",key);
+
         save(project);
 
         if( projects.containsKey(key) ){
@@ -338,7 +391,8 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
     public static void save(Project project){
 
         MProject mProject = getMProject(project);
-        mProject.save(project);
+        if(mProject != null && mProject.isIEProject )
+            mProject.save(project);
 
     }
 
@@ -360,8 +414,9 @@ public class IEAppLoader implements ApplicationLoadListener, FileEditorManagerLi
     @Override
     public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
 
+        PsiAwareTextEditorImpl com;
 
-        Log.i("File opened:%s",file.getPath());
+        Log.i("file opened:%s",source.getSelectedEditor(file).getComponent());
 
     }
 

@@ -1,26 +1,14 @@
 package org.ifelse.editors;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IdeEventQueue;
-import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.AsyncExecutionService;
-import com.intellij.openapi.application.TransactionGuard;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.FileEditorStateLevel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
 import com.intellij.ui.tabs.JBTabs;
 import org.ifelse.IEAppLoader;
 import org.ifelse.RP;
@@ -31,18 +19,18 @@ import org.ifelse.model.MEditor;
 import org.ifelse.model.MFlowPoint;
 import org.ifelse.ui.OnClickListener;
 import org.ifelse.ui.ToolbarButton;
-import org.ifelse.utils.*;
+import org.ifelse.utils.GroovyUtil;
+import org.ifelse.utils.IconFactory;
+import org.ifelse.utils.Icons;
+import org.ifelse.utils.Log;
 import org.ifelse.vl.VLDoc;
 import org.ifelse.vl.VLItem;
 import org.ifelse.vl.VLLine;
 import org.ifelse.vl.VLPoint;
 import org.jetbrains.annotations.NotNull;
 
-
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class VLEditor extends IEEditor implements MessageCenter.IMessage {
@@ -128,7 +116,7 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
 
                         doc.onFocusChanged(point);
 
-
+                        doc.datachanged = true;
 
                         doc.repaint();
 
@@ -186,6 +174,7 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
             });
 
             ToolbarButton btn_log = new ToolbarButton(AllIcons.Css.Import);
+            btn_log.setToolTipText("import flow log from logcat ");
 
             btn_log.setOnClickListener(new OnClickListener() {
                 @Override
@@ -368,8 +357,6 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
 
         String path = virtualFile.getPath();
 
-
-
         Log.i("VLEditor load:%s",path);
 
 
@@ -444,6 +431,8 @@ public class VLEditor extends IEEditor implements MessageCenter.IMessage {
 
     @Override
     public void deselectNotify() {
+
+
 
         //save();
         ToolWindowManager.getInstance(project).getToolWindow("Property").hide(null);

@@ -1,5 +1,7 @@
 package org.ifelse.model;
 
+import java.awt.*;
+
 public class Rect {
 
 
@@ -7,6 +9,8 @@ public class Rect {
     public int x1;
     public int y1;
     public int x;
+    public boolean is_focus;
+    public Point move_point;
 
 
     public Rect() {
@@ -59,5 +63,34 @@ public class Rect {
         this.x1 = x1;
         this.y1 = y1;
 
+    }
+
+    public int width(){
+
+        return x1-x;
+    }
+    public int height(){
+
+        return y1-y;
+    }
+
+    public void move(Point point) {
+
+
+
+
+        x -= move_point.x - point.x;
+        y -= move_point.y - point.y;
+
+        x1 -= move_point.x - point.x;
+        y1 -= move_point.y - point.y;
+
+        move_point = point;
+
+    }
+
+    public void setMovePoint(Point point) {
+
+        move_point = point;
     }
 }

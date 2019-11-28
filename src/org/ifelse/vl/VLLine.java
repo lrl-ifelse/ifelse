@@ -82,14 +82,8 @@ public class VLLine extends VLItem {
 
             if (point_to == null && move_cursor != null) {
 
-                //drawLine(g, point_from.x, point_from.y, move_cursor.x, move_cursor.y);
-
                 g.setColor( Color.BLUE );
                 drawLineArrow(g,point_from.x+point_from.width/2,point_from.y+point_from.height/2,move_cursor.x,move_cursor.y,line_wh );
-
-
-
-
             }
             else if (point_to != null)
                 drawLine(g, point_from.x, point_from.y, point_to.x, point_to.y);
