@@ -1,16 +1,16 @@
 <idea-plugin>
-  <id>www.fclassroom.com.ifelse</id>
+  <id>lrl-ifelse</id>
   <name>ifelse</name>
   <version>1.4</version>
-  <vendor email="dizhanbin@fclassroom.com" url="http://www.fclassroom.com">fclassroom</vendor>
+  <vendor email="dizhanbin@hotmail.com" url="">ifelse</vendor>
 
   <description><![CDATA[
 
 
       <p>Android auxiliary development plugin.</p>
       <p>
-        <a href="https://github.com/fclassroom/ifelse">ifelse github</a> &nbsp & &nbsp
-         <a href="https://github.com/fclassroom/wordspelling">example github</a>
+        <a href="https://github.com/lrl-ifele/ifelse">ifelse github</a> &nbsp & &nbsp
+         <a href="https://github.com/lrl-ifele/wordspelling">example github</a>
       </p>
       <p>Activity, business visualization management;Download the example to modify.</p>
 
